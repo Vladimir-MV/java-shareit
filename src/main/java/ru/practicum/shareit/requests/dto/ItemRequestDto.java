@@ -1,7 +1,4 @@
-package ru.practicum.shareit.requests.dto;
+    package ru.practicum.shareit.requests.dto;
 
-/**
- * // TODO .
- */
-public class ItemRequestDto {
-}
+    public class ItemRequestDto {
+    }
