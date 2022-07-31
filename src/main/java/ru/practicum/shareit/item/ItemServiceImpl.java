@@ -101,8 +101,6 @@
                     if (textName.indexOf(textLowerCase) >= 0) flag = true;
                 }
                 if (flag){
-                    System.out.println(item.getId() + " " + item.getName() + " " + item.getOwner() + " " + item.getDescription() +
-                            " " + item.getAvailable());
                     listItem.add(item);
                 }
             }
