@@ -1,25 +1,24 @@
 package ru.practicum.shareit.item;
 
 import ru.practicum.shareit.exception.ValidationException;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import java.util.List;
 import java.util.Optional;
 
 public interface ItemService {
 
-    //private void getIdItemService (Item item){}
+    ItemDto createItemService (ItemDto item, Optional<Long> idUser) throws ValidationException;
 
-    Item createItemService (Item item, Optional<Long> idUser) throws ValidationException;
+    List<ItemDto> findAllItemsOwnerService (Optional<Long> idUser);
 
-    List<Item> findAllItemsOwnerService (Optional<Long> idUser);
+    ItemDto findItemByIdService (Optional<Long> id, Optional<Long> idUser);
 
-    Item findItemByIdService (Optional<Long> id, Optional<Long> idUser);
+    ItemDto patchItemService (ItemDto item, Optional<Long> idUser, Optional<Long> id) throws ValidationException;
 
-    Item patchItemService (Item item, Optional<Long> idUser, Optional<Long> id) throws ValidationException;
+    ItemDto deleteItemService (Optional<Long> id, Optional<Long> idUser);
 
-    Item deleteItemService (Optional<Long> id, Optional<Long> idUser);
-
-    List<Item> findItemSearchService (Optional<Long> idUser, String text) throws ValidationException;
+    List<ItemDto> findItemSearchService (Optional<Long> idUser, String text) throws ValidationException;
 
     boolean validationItem(Item item, Optional<Long> idUser) throws ValidationException;
 

@@ -1,8 +1,10 @@
     package ru.practicum.shareit.item;
 
     import lombok.Getter;
+    import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.stereotype.Repository;
     import ru.practicum.shareit.item.model.Item;
+    import ru.practicum.shareit.user.UserStorage;
 
     import java.util.*;
 
@@ -10,7 +12,15 @@
     public class ItemStorage {
         private Long id = 0L;
         @Getter
+        private UserStorage userStorage;
+
+        @Getter
         private Map<Long, Item> dataItem = new HashMap<>();
+
+        @Autowired
+        public ItemStorage (UserStorage userStorage){
+            this.userStorage = userStorage;
+        }
 
         public void getIdItemStorage(Item item){
             ++id;
@@ -18,14 +28,13 @@
         }
 
         public Item createItemStorage (Item item, Long idUser) {
-            item.setOwner(idUser);
             dataItem.put(item.getId(), item);
             return dataItem.get(item.getId());
         }
         public List<Item> findAllItemsOwnerStorage (Long idUser){
             List<Item> list = new ArrayList<>();
             for (Item item: dataItem.values()){
-                if (item.getOwner() == idUser) list.add(item);
+                if (item.getOwner().getId() == idUser) list.add(item);
             }
             return list;
         }
@@ -44,7 +53,7 @@
         public Item deleteItemStorage (Long id, Long idUser) {
             if (!dataItem.containsKey(id))
                 throw new NoSuchElementException("Такой вещи нет! deleteItemStorage()");
-            if (dataItem.get(id).getOwner() != idUser)
+            if (dataItem.get(id).getOwner().getId() != idUser)
                 throw new NoSuchElementException("Владелец вещи указан не верно! deleteItemStorage()");
             Item item = dataItem.get(id);
             dataItem.remove(id);

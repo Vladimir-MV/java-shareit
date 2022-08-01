@@ -5,8 +5,11 @@
     import org.springframework.stereotype.Service;
     import ru.practicum.shareit.exception.ConflictException;
     import ru.practicum.shareit.exception.ValidationException;
+    import ru.practicum.shareit.user.dto.UserDto;
+    import ru.practicum.shareit.user.dto.UserMapper;
     import ru.practicum.shareit.user.model.User;
 
+    import java.util.ArrayList;
     import java.util.List;
     import java.util.NoSuchElementException;
     import java.util.Optional;
@@ -25,40 +28,46 @@
             userStorage.getIdUserStorage(user);
         }
 
-        public List<User> findAllUserService() {
+        public List<UserDto> findAllUserService() {
             List<User> list = userStorage.getAllUsersStorage();
             log.info("Текущее количество пользователей в списке: {}", list.size());
-            return list;
+            List<UserDto> listDto = new ArrayList<>();
+            for (User user: list){
+                listDto.add(UserMapper.toUserDto(user));
+            }
+            return listDto;
         }
 
-        public User findUserByIdService(Optional<Long> id) {
+        public UserDto findUserByIdService(Optional<Long> id) {
             if (id.isPresent()) {
                 User user = userStorage.getUserStorage(id.get());
                 log.info("Пользователь по id запросу: {}", user.getName());
-                return user;
+                return UserMapper.toUserDto(user);
             }
             throw new NoSuchElementException("Не правильно задан id пользователя! findUserByIdService()");
         }
 
-        public User deleteUserService(Optional<Long> id){
+        public UserDto deleteUserService(Optional<Long> id){
             if (id.isPresent()) {
                 User user = userStorage.deleteStorage(id.get());
                 log.info("Пользователь: {} удален.", user);
-                return user;
+                return UserMapper.toUserDto(user);
             }
             throw new NoSuchElementException("Переменные пути указаны не верно! deleteUserService()");
         }
 
-        public User createUserService(User user) throws ValidationException, ConflictException {
+        public UserDto createUserService(UserDto userDto) throws ValidationException, ConflictException {
+            User user = UserMapper.toUser(userDto);
             if (validationUser(user)) {
                 User userInStorage = userStorage.createUserStorage(user);
                 log.info("Добавлен пользователь: {}", userInStorage.getName());
-                return userInStorage;
+                return UserMapper.toUserDto(userInStorage);
             }
            throw new ValidationException("Пользователь на создан! createUserService()");
         }
 
-        public User patchUserService(User user, Optional<Long> id) throws ValidationException, ConflictException {
+        public UserDto patchUserService(UserDto userDto, Optional<Long> id) throws ValidationException, ConflictException {
+            User user = UserMapper.toUser(userDto);
             if (!id.isPresent())
                 throw new NoSuchElementException("Отсутствует id пользователя! patchUserService()");
             user.setId(id.get());
@@ -69,7 +78,7 @@
                     userStorage.getUsersBase().get(id.get()).setEmail(user.getEmail());
                 User userInStorage = userStorage.getUsersBase().get(id.get());
                 log.info("Данные пользователя: {} изменены.", userInStorage.getName());
-                return userInStorage;
+                return UserMapper.toUserDto(userInStorage);
             }
             throw new ValidationException("Информация о пользователе не обновлена! patchUserService()");
         }
