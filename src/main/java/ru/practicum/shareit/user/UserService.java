@@ -10,15 +10,15 @@
     import java.util.Optional;
 
     public interface UserService {
-        List<UserDto> findAllUserService();
+        List<UserDto> findAllUser();
 
-        UserDto findUserByIdService(Optional<Long> id);
+        UserDto findUserById(Optional<Long> id);
 
-        UserDto deleteUserService(Optional<Long> id);
+        UserDto deleteUser(Optional<Long> id);
 
-        UserDto createUserService(@Valid UserDto user) throws ValidationException, ConflictException;
+        UserDto createUser(@Valid UserDto user) throws ValidationException, ConflictException;
 
-        UserDto patchUserService(UserDto user, Optional<Long> id) throws ValidationException, ConflictException;
+        UserDto patchUser(UserDto user, Optional<Long> id) throws ValidationException, ConflictException;
 
         boolean validationUser(User user) throws ValidationException, ConflictException;
     }

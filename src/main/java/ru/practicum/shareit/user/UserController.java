@@ -27,27 +27,27 @@
         }
         @GetMapping()
         protected List<UserDto> findAll() {
-            return userService.findAllUserService();
+            return userService.findAllUser();
         }
 
         @GetMapping("/{id}")
         protected UserDto findUserById(@PathVariable Optional<Long> id) {
-            return userService.findUserByIdService(id);
+            return userService.findUserById(id);
         }
 
         @PatchMapping("/{id}")
         protected UserDto put(@PathVariable Optional<Long> id, @RequestBody UserDto userDto)
             throws ValidationException, ConflictException {
-            return userService.patchUserService(userDto, id);
+            return userService.patchUser(userDto, id);
         }
 
         @DeleteMapping("/{id}")
         protected UserDto deleteUser(@PathVariable Optional<Long> id) {
-            return userService.deleteUserService(id);
+            return userService.deleteUser(id);
         }
 
         @PostMapping()
         protected UserDto create(@Valid @RequestBody UserDto userDto) throws ValidationException, ConflictException {
-            return userService.createUserService(userDto);
+            return userService.createUser(userDto);
         }
     }

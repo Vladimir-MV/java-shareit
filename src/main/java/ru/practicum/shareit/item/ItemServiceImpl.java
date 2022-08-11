@@ -24,24 +24,24 @@
             this.itemStorage = itemStorage;
         }
         private void getIdItemService (Item item){
-            itemStorage.getIdItemStorage(item);
+            itemStorage.getIdItem(item);
         }
 
-        public ItemDto createItemService (ItemDto itemDto, Optional<Long> idUser) throws ValidationException {
+        public ItemDto createItem (ItemDto itemDto, Optional<Long> idUser) throws ValidationException {
             Item item = ItemMapper.toItem(itemDto);
             if (validationItem(item, idUser)) {
                 item.setOwner(itemStorage.getUserStorage().getUsersBase().get(idUser.get()));
-                Item itemInStorage = itemStorage.createItemStorage (item, idUser.get());
+                Item itemInStorage = itemStorage.createItem(item, idUser.get());
                 log.info("Добавлена вещь: {}", itemInStorage.getName());
                 return ItemMapper.toItemDto(itemInStorage);
             }
-            throw new ValidationException("Вещь не создана! createItemService()");
+            throw new ValidationException("Вещь не создана! createItem()");
         }
 
-        public List<ItemDto> findAllItemsOwnerService (Optional<Long> idUser){
+        public List<ItemDto> findAllItemsOwner (Optional<Long> idUser){
             if (!idUser.isPresent())
-                throw new NoSuchElementException("Отсутствует id пользователя! findAllItemsOwnerService()");
-            List<Item> list = itemStorage.findAllItemsOwnerStorage (idUser.get());
+                throw new NoSuchElementException("Отсутствует id пользователя! findAllItemsOwner()");
+            List<Item> list = itemStorage.findAllItemsOwner (idUser.get());
             log.info("Текущее количество вещей пользователя {}, в списке: {}", idUser.get(), list.size());
             List<ItemDto> listDto = new ArrayList<>();
             for (Item item: list){
@@ -50,48 +50,48 @@
             return listDto;
         }
 
-        public ItemDto findItemByIdService (Optional<Long> id, Optional<Long> idUser) {
+        public ItemDto findItemById (Optional<Long> id, Optional<Long> idUser) {
             if (!idUser.isPresent())
-                throw new NoSuchElementException("Отсутствует id пользователя! findItemByIdService()");
+                throw new NoSuchElementException("Отсутствует id пользователя! findItemById()");
             if (!id.isPresent())
-                throw new NoSuchElementException("Не правильно задан id вещи! findItemByIdService()");
-                Item item = itemStorage.findItemByIdStorage (id.get());
+                throw new NoSuchElementException("Не правильно задан id вещи! findItemById()");
+                Item item = itemStorage.findItemById (id.get());
                 log.info("Просмотрена вещь: {}", item.getName());
                 return ItemMapper.toItemDto(item);
         }
 
-        public ItemDto patchItemService (ItemDto itemDto, Optional<Long> idUser, Optional<Long> id) throws ValidationException {
+        public ItemDto patchItem (ItemDto itemDto, Optional<Long> idUser, Optional<Long> id) throws ValidationException {
             Item item = ItemMapper.toItem(itemDto);
             if (!id.isPresent())
-                throw new NoSuchElementException("Отсутствует id вещи! patchItemService()");
+                throw new NoSuchElementException("Отсутствует id вещи! patchItem()");
             if (!idUser.isPresent())
                 throw new ValidationException("Отсутствует id пользователя! validationItem()");
             Item itemSt = itemStorage.getDataItem().get(id.get());
             if (itemSt.getOwner().getId() != (idUser.get()))
-                throw new NoSuchElementException("Вещь не принадлежит этому владельцу! patchUserService()");
+                throw new NoSuchElementException("Вещь не принадлежит этому владельцу! patchUser()");
             if (!(item.getName() == null || item.getName() == "")) itemSt.setName(item.getName());
             if (!(item.getDescription() == null || item.getDescription() == ""))
                 itemSt.setDescription(item.getDescription());
             if (item.getAvailable() != null) itemSt.setAvailable(item.getAvailable());
-            itemStorage.patchItemStorage(itemSt);
+            itemStorage.patchItem(itemSt);
                 log.info("Данные вещи: {} изменены.", itemSt.getName());
                 return ItemMapper.toItemDto(itemSt);
         }
 
-        public ItemDto deleteItemService (Optional<Long> id, Optional<Long> idUser) {
+        public ItemDto deleteItem(Optional<Long> id, Optional<Long> idUser) {
             if (!idUser.isPresent())
                 throw new NoSuchElementException("Отсутствует id пользователя! deleteItemService()");
             if (id.isPresent()) {
-                Item item = itemStorage.deleteItemStorage (id.get(), idUser.get());
+                Item item = itemStorage.deleteItem (id.get(), idUser.get());
                 log.info("Пользователь: {} удален.", item);
                 return ItemMapper.toItemDto(item);
             }
             throw new NoSuchElementException("Переменные пути указаны не верно! deleteItemService()");
         }
 
-        public List<ItemDto> findItemSearchService (Optional<Long> idUser, String text) throws ValidationException {
+        public List<ItemDto> findItemSearch (Optional<Long> idUser, String text) throws ValidationException {
             if (!idUser.isPresent())
-                throw new ValidationException("Отсутствует id пользователя! findItemSearchService()");
+                throw new ValidationException("Отсутствует id пользователя! findItemSearch()");
             if (text == null || text.length() == 0) return new ArrayList<ItemDto>();
             List<Item> listItem = new ArrayList<>();
             String textLowerCase = text.toLowerCase();

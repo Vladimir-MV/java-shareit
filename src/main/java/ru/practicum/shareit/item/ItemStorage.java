@@ -22,16 +22,16 @@
             this.userStorage = userStorage;
         }
 
-        public void getIdItemStorage(Item item){
+        public void getIdItem(Item item){
             ++id;
             item.setId(id);
         }
 
-        public Item createItemStorage (Item item, Long idUser) {
+        public Item createItem(Item item, Long idUser) {
             dataItem.put(item.getId(), item);
             return dataItem.get(item.getId());
         }
-        public List<Item> findAllItemsOwnerStorage (Long idUser){
+        public List<Item> findAllItemsOwner (Long idUser){
             List<Item> list = new ArrayList<>();
             for (Item item: dataItem.values()){
                 if (item.getOwner().getId() == idUser) list.add(item);
@@ -39,22 +39,22 @@
             return list;
         }
 
-        public Item findItemByIdStorage (Long id) {
+        public Item findItemById (Long id) {
             if (!dataItem.containsKey(id))
-                throw new NoSuchElementException("Такой вещи нет! findItemByIdStorage()");
+                throw new NoSuchElementException("Такой вещи нет! findItemById()");
             return dataItem.get(id);
         }
 
-        public Item patchItemStorage (Item item) {
+        public Item patchItem (Item item) {
             dataItem.put(item.getId(), item);
             return dataItem.get(item.getId());
         }
 
-        public Item deleteItemStorage (Long id, Long idUser) {
+        public Item deleteItem (Long id, Long idUser) {
             if (!dataItem.containsKey(id))
-                throw new NoSuchElementException("Такой вещи нет! deleteItemStorage()");
+                throw new NoSuchElementException("Такой вещи нет! deleteItem()");
             if (dataItem.get(id).getOwner().getId() != idUser)
-                throw new NoSuchElementException("Владелец вещи указан не верно! deleteItemStorage()");
+                throw new NoSuchElementException("Владелец вещи указан не верно! deleteItem()");
             Item item = dataItem.get(id);
             dataItem.remove(id);
             return item;

@@ -106,13 +106,13 @@
 							<phase>compile</phase>
 						</execution>
 					</executions>
-<!--					<dependencies>-->
+					<dependencies>
 <!--						<dependency>-->
 <!--							<groupId>com.puppycrawl.tools</groupId>-->
 <!--							<artifactId>checkstyle</artifactId>-->
 <!--							<version>10.3</version>-->
 <!--						</dependency>-->
-<!--					</dependencies>-->
+					</dependencies>
 				</plugin>
 				<plugin>
 					<groupId>com.github.spotbugs</groupId>
@@ -204,8 +204,8 @@
 	<profiles>
 		<profile>
 			<id>check</id>
-			<build>
-				<plugins>
+<!--			<build>-->
+<!--				<plugins>-->
 <!--					<plugin>-->
 <!--						<groupId>org.apache.maven.plugins</groupId>-->
 <!--						<artifactId>maven-checkstyle-plugin</artifactId>-->
@@ -214,8 +214,8 @@
 <!--						<groupId>com.github.spotbugs</groupId>-->
 <!--						<artifactId>spotbugs-maven-plugin</artifactId>-->
 <!--					</plugin>-->
-				</plugins>
-			</build>
+<!--				</plugins>-->
+<!--			</build>-->
 			<reporting>
 				<plugins>
 <!--					<plugin>-->

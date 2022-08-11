@@ -16,12 +16,12 @@
         @Getter
         private HashMap<Long, User> usersBase = new HashMap<>();
 
-        public void getIdUserStorage(User user) {
+        public void getIdUser(User user) {
             ++id;
             user.setId(id);
         }
 
-        public List<User> getAllUsersStorage() {
+        public List<User> getAllUsers() {
             return new ArrayList<>(usersBase.values());
         }
 
@@ -31,7 +31,7 @@
             return usersBase.get(id);
         }
 
-        public User deleteStorage(Long id) {
+        public User deleteUser(Long id) {
             if (!usersBase.containsKey(id))
                 throw new NoSuchElementException("Такого пользователя нет! deleteFriendsStorage()");
             User user = usersBase.get(id);
@@ -39,12 +39,12 @@
             return  user;
         }
 
-        public User createUserStorage(User user){
+        public User createUser(User user){
             usersBase.put(user.getId(), user);
             return usersBase.get(user.getId());
         }
 
-        public User patchUserStorage(User user) {
+        public User patchUser(User user) {
             usersBase.put(user.getId(), user);
             return usersBase.get(user.getId());
         }

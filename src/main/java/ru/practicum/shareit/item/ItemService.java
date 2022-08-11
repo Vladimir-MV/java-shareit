@@ -8,17 +8,17 @@ import java.util.Optional;
 
 public interface ItemService {
 
-    ItemDto createItemService (ItemDto item, Optional<Long> idUser) throws ValidationException;
+    ItemDto createItem (ItemDto item, Optional<Long> idUser) throws ValidationException;
 
-    List<ItemDto> findAllItemsOwnerService (Optional<Long> idUser);
+    List<ItemDto> findAllItemsOwner (Optional<Long> idUser);
 
-    ItemDto findItemByIdService (Optional<Long> id, Optional<Long> idUser);
+    ItemDto findItemById (Optional<Long> id, Optional<Long> idUser);
 
-    ItemDto patchItemService (ItemDto item, Optional<Long> idUser, Optional<Long> id) throws ValidationException;
+    ItemDto patchItem (ItemDto item, Optional<Long> idUser, Optional<Long> id) throws ValidationException;
 
-    ItemDto deleteItemService (Optional<Long> id, Optional<Long> idUser);
+    ItemDto deleteItem(Optional<Long> id, Optional<Long> idUser);
 
-    List<ItemDto> findItemSearchService (Optional<Long> idUser, String text) throws ValidationException;
+    List<ItemDto> findItemSearch (Optional<Long> idUser, String text) throws ValidationException;
 
     boolean validationItem(Item item, Optional<Long> idUser) throws ValidationException;
 

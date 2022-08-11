@@ -27,36 +27,36 @@
         }
         @GetMapping()
         protected List<ItemDto> findAllItemsOwner(@RequestHeader("X-Sharer-User-Id") Optional<Long> idUser) {
-            return itemService.findAllItemsOwnerService(idUser);
+            return itemService.findAllItemsOwner(idUser);
         }
 
         @GetMapping("/{id}")
         protected ItemDto findItemById(@RequestHeader("X-Sharer-User-Id") Optional<Long> idUser,
             @PathVariable Optional<Long> id) {
-            return itemService.findItemByIdService(id, idUser);
+            return itemService.findItemById(id, idUser);
         }
 
         @PatchMapping("/{id}")
         protected ItemDto put(@RequestHeader("X-Sharer-User-Id") Optional<Long> idUser,
             @PathVariable Optional<Long> id, @RequestBody ItemDto itemDto) throws ValidationException {
-            return itemService.patchItemService (itemDto, idUser, id);
+            return itemService.patchItem (itemDto, idUser, id);
         }
 
         @DeleteMapping("/{id}")
         protected ItemDto deleteItem(@RequestHeader("X-Sharer-User-Id") Optional<Long> idUser,
             @PathVariable Optional<Long> id) {
-            return itemService.deleteItemService(id, idUser);
+            return itemService.deleteItem(id, idUser);
         }
 
         @PostMapping()
         protected ItemDto create(@Valid @RequestHeader("X-Sharer-User-Id") Optional<Long> idUser,
             @RequestBody ItemDto itemDto) throws ValidationException, ConflictException {
-            return itemService.createItemService(itemDto, idUser);
+            return itemService.createItem(itemDto, idUser);
         }
 
         @GetMapping("/search")
         protected List<ItemDto> findItemById(@RequestHeader("X-Sharer-User-Id") Optional<Long> idUser,
             @RequestParam("text") String text) throws ValidationException {
-            return itemService.findItemSearchService(idUser, text);
+            return itemService.findItemSearch(idUser, text);
         }
     }

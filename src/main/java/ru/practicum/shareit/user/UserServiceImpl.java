@@ -24,12 +24,12 @@
             this.userStorage = userStorage;
         }
 
-        private void getIdUserService(User user){
-            userStorage.getIdUserStorage(user);
+        private void getIdUser(User user){
+            userStorage.getIdUser(user);
         }
 
-        public List<UserDto> findAllUserService() {
-            List<User> list = userStorage.getAllUsersStorage();
+        public List<UserDto> findAllUser() {
+            List<User> list = userStorage.getAllUsers();
             log.info("Текущее количество пользователей в списке: {}", list.size());
             List<UserDto> listDto = new ArrayList<>();
             for (User user: list){
@@ -38,38 +38,38 @@
             return listDto;
         }
 
-        public UserDto findUserByIdService(Optional<Long> id) {
+        public UserDto findUserById(Optional<Long> id) {
             if (id.isPresent()) {
                 User user = userStorage.getUserStorage(id.get());
                 log.info("Пользователь по id запросу: {}", user.getName());
                 return UserMapper.toUserDto(user);
             }
-            throw new NoSuchElementException("Не правильно задан id пользователя! findUserByIdService()");
+            throw new NoSuchElementException("Не правильно задан id пользователя! findUserById()");
         }
 
-        public UserDto deleteUserService(Optional<Long> id){
+        public UserDto deleteUser(Optional<Long> id){
             if (id.isPresent()) {
-                User user = userStorage.deleteStorage(id.get());
+                User user = userStorage.deleteUser(id.get());
                 log.info("Пользователь: {} удален.", user);
                 return UserMapper.toUserDto(user);
             }
-            throw new NoSuchElementException("Переменные пути указаны не верно! deleteUserService()");
+            throw new NoSuchElementException("Переменные пути указаны не верно! deleteUser()");
         }
 
-        public UserDto createUserService(UserDto userDto) throws ValidationException, ConflictException {
+        public UserDto createUser(UserDto userDto) throws ValidationException, ConflictException {
             User user = UserMapper.toUser(userDto);
             if (validationUser(user)) {
-                User userInStorage = userStorage.createUserStorage(user);
+                User userInStorage = userStorage.createUser(user);
                 log.info("Добавлен пользователь: {}", userInStorage.getName());
                 return UserMapper.toUserDto(userInStorage);
             }
-           throw new ValidationException("Пользователь на создан! createUserService()");
+           throw new ValidationException("Пользователь на создан! createUser()");
         }
 
-        public UserDto patchUserService(UserDto userDto, Optional<Long> id) throws ValidationException, ConflictException {
+        public UserDto patchUser(UserDto userDto, Optional<Long> id) throws ValidationException, ConflictException {
             User user = UserMapper.toUser(userDto);
             if (!id.isPresent())
-                throw new NoSuchElementException("Отсутствует id пользователя! patchUserService()");
+                throw new NoSuchElementException("Отсутствует id пользователя! patchUser()");
             user.setId(id.get());
             if (validationUser(user)) {
                 if (!(user.getName() == null || user.getName() == ""))
@@ -80,7 +80,7 @@
                 log.info("Данные пользователя: {} изменены.", userInStorage.getName());
                 return UserMapper.toUserDto(userInStorage);
             }
-            throw new ValidationException("Информация о пользователе не обновлена! patchUserService()");
+            throw new ValidationException("Информация о пользователе не обновлена! patchUser()");
         }
 
         public boolean validationUser(User user) throws ValidationException, ConflictException {
@@ -96,7 +96,7 @@
                     throw new ConflictException("Адрес почты уже занят! validationUser()");
             }
             if (user.getId() == null) {
-                getIdUserService(user);
+                getIdUser(user);
             }
             else if (user.getId() <= 0)  {
                 throw new NoSuchElementException ("id не может быть отрицательным! validationUser()");
