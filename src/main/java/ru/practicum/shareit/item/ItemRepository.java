@@ -12,4 +12,5 @@
                 " or upper(i.description) like upper(concat('%', ?1, '%')) " +
                 "and i.available is true")
         Optional<List<Item>> searchListItem(String text);
+
     }

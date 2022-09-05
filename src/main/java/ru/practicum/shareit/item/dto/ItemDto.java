@@ -1,6 +1,7 @@
     package ru.practicum.shareit.item.dto;
 
     import lombok.*;
+    import ru.practicum.shareit.user.dto.UserDto;
     import ru.practicum.shareit.user.model.User;
     import javax.validation.constraints.NotBlank;
     import java.util.List;
@@ -10,7 +11,7 @@
     @NoArgsConstructor
     @AllArgsConstructor
     public class ItemDto {
-        public ItemDto (Long id, String name, String description, Boolean available, User owner){
+        public ItemDto (Long id, String name, String description, Boolean available, UserDto owner){
             this.id = id;
             this.name = name;
             this.description = description;
@@ -24,7 +25,7 @@
         private String description;
         @NotBlank
         private Boolean available;
-        private User owner;
+        private UserDto owner;
         private List<CommentDto> comments;
         //private ItemRequest request;
     }

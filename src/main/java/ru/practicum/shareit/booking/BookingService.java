@@ -13,7 +13,7 @@
         public BookingDtoById createBooking(Optional<Long> idUser, Optional<BookingDtoIn> bookingDtoIn)
                 throws ValidationException;
 
-        BookingDtoOut patchStatusBooking(Optional<Long> idUser, Optional<Long> approved, String bookingId) throws ValidationException;
+        BookingDtoOut patchStatusBooking(Optional<Long> idUser, Optional<Long> approved, Boolean bookingId) throws ValidationException;
 
         BookingDtoOut findBookingById(Optional<Long> idUser, Optional<Long> bookingId) throws ValidationException;
 

@@ -22,6 +22,14 @@
                     booking.getId()
             );
         }
+        public static BookingDtoById toBookingDtoByIdTime(Booking booking) {
+            return new BookingDtoById (
+                    booking.getId(),
+                    booking.getBooker().getId(),
+                    booking.getStart(),
+                    booking.getEnd()
+            );
+        }
 
         public static Booking toBooking(BookingDtoIn bookingDtoIn) {
             return new Booking (

@@ -16,6 +16,9 @@
     import java.util.List;
     import java.util.NoSuchElementException;
     import java.util.Optional;
+
+    import static ru.practicum.shareit.booking.State.*;
+
     @Slf4j
     @Service
     public class BookingServiceImpl implements BookingService{
@@ -74,7 +77,7 @@
         return booking.get() ;
         }
         @Override
-        public BookingDtoOut patchStatusBooking (Optional<Long> idUser, Optional<Long> bookingId, String approved)
+        public BookingDtoOut patchStatusBooking (Optional<Long> idUser, Optional<Long> bookingId, Boolean approved)
             throws ValidationException {
             User user = validationUser(idUser);
             Booking booking = validBooking(bookingId);
@@ -83,11 +86,11 @@
                 throw new NoSuchElementException("Вещь не найдена! patchStatusBooking()");
             if (!item.get().getOwner().getId().equals(user.getId()))
                 throw new NoSuchElementException("Владелец вещи не совпадает! patchStatusBooking()");
-            if (booking.getStatus().equals(Status.APPROVED) && (approved.equals("true")))
+            if (booking.getStatus().equals(Status.APPROVED) && approved)
                 throw new ValidationException(String.format("Статус уже был ранее изменен на %S patchStatusBooking()", approved));
-            if (approved.equals("true")) {
+            if (approved) {
                 booking.setStatus(Status.APPROVED);
-            } else if (approved.equals("false")) {
+            } else if (!approved) {
                 booking.setStatus(Status.REJECTED);
             } else {
                 throw new ValidationException("Не верный параметр approved вещи! patchStatusBooking()");
@@ -116,137 +119,75 @@
             throw new NoSuchElementException("Пользователю информация о бронировании не доступна, findBookingById");
         }
         @Override
-        public List<BookingDtoOut> findBookingsState(Optional<Long> idUser, String state) throws ValidationException, MessageFailedException {
-            User user = validationUser(idUser);
-            List<Booking> list;
-            switch (state){
-                case "ALL":
-                    list =  bookingRepository.findByBooker_IdOrderByStartDesc(user.getId());
-                    List listAll = new ArrayList();
-                    for (Booking booking: list){
-                        if (booking.getStatus() != Status.REJECTED) listAll.add(booking);
-                    }
-                    log.info("Вся бронь пользователя {}, со статусом ALL", user.getName());
-                    return BookingMapper.toListBookingDto(listAll);
-                case "CURRENT":
-                    list = bookingRepository.findByBooker_IdOrderByStartDesc(user.getId());
-                    List listCurrent = new ArrayList();
-                    LocalDateTime timeCurrent = LocalDateTime.now();
-                    for (Booking booking: list){
-                        if (timeCurrent.isBefore(booking.getEnd())
-                                && timeCurrent.isAfter(booking.getStart())) listCurrent.add(booking);
-                    }
-                    log.info("Вся бронь пользователя {}, со статусом CURRENT", user.getName());
-                    return BookingMapper.toListBookingDto(listCurrent);
-                case "PAST":
-                    list = bookingRepository.findByBooker_IdOrderByStartDesc(user.getId());
-                    List listPast = new ArrayList();
-                    LocalDateTime timePast = LocalDateTime.now();
-                    for (Booking booking: list){
-                        if (timePast.isAfter(booking.getEnd())) listPast.add(booking);
-                    }
-                    log.info("Вся бронь пользователя {}, со статусом PAST", user.getName());
-                    return BookingMapper.toListBookingDto(listPast);
-                case "FUTURE":
-                    list = bookingRepository.findByBooker_IdOrderByStartDesc(user.getId());
-                    List listFuture = new ArrayList();
-                    LocalDateTime timeFuture = LocalDateTime.now();
-                    for (Booking booking: list){
-                        if (timeFuture.isBefore(booking.getStart())) listFuture.add(booking);
-                    }
-                    log.info("Вся бронь пользователя {}, со статусом FUTURE", user.getName());
-                    return BookingMapper.toListBookingDto(listFuture);
-                case "WAITING":
-                    list = bookingRepository.findByBooker_IdOrderByStartDesc(user.getId());
-                    List listWaiting = new ArrayList();
-                    for (Booking booking: list){
-                        if (booking.getStatus() == Status.WAITING) listWaiting.add(booking);
-                    }
-                    log.info("Вся бронь пользователя {}, со статусом WAITING", user.getName());
-                    return BookingMapper.toListBookingDto(listWaiting);
-                case "REJECTED":
-                    list = bookingRepository.findByBooker_IdOrderByStartDesc(user.getId());
-                    List listRejected = new ArrayList();
-                    for (Booking booking: list){
-                        if (booking.getStatus() == Status.REJECTED) listRejected.add(booking);
-                    }
-                    log.info("Вся бронь пользователя {}, со статусом REJECTED", user.getName());
-                    return BookingMapper.toListBookingDto(listRejected);
-                default:
-                    throw new MessageFailedException ();
+        public List<BookingDtoOut> findBookingsState(Optional<Long> idUser, String state)
+                throws ValidationException, MessageFailedException {
+            try {
+                State.valueOf(state);
+            } catch (IllegalArgumentException e) {
+                throw new MessageFailedException();
             }
+            User user = validationUser(idUser);
+                switch (State.valueOf(state)) {
+                    case ALL:
+                        log.info("Вся бронь пользователя {}, со статусом ALL", user.getName());
+                        return BookingMapper.toListBookingDto(bookingRepository.searchListBookingALL(user.getId()));
+                    case CURRENT:
+                        log.info("Вся бронь пользователя {}, со статусом CURRENT", user.getName());
+                        return BookingMapper.toListBookingDto(
+                                bookingRepository.searchListBookingCurrent(user.getId(), LocalDateTime.now()));
+                    case PAST:
+                        log.info("Вся бронь пользователя {}, со статусом PAST", user.getName());
+                        return BookingMapper.toListBookingDto(
+                                bookingRepository.searchListBookingPast(user.getId(), LocalDateTime.now()));
+                    case FUTURE:
+                        log.info("Вся бронь пользователя {}, со статусом FUTURE", user.getName());
+                        return BookingMapper.toListBookingDto(
+                                bookingRepository.searchListBookingFuture(user.getId(), LocalDateTime.now()));
+                    case WAITING:
+                        log.info("Вся бронь пользователя {}, со статусом WAITING", user.getName());
+                        return BookingMapper.toListBookingDto(
+                                bookingRepository.searchListBookingWaiting(user.getId()));
+                    case REJECTED:
+                        log.info("Вся бронь пользователя {}, со статусом REJECTED", user.getName());
+                        return BookingMapper.toListBookingDto(
+                                bookingRepository.searchListBookingRejected(user.getId()));
+                    default:
+                        throw new MessageFailedException();
+                }
         }
         @Override
         public List<BookingDtoOut> findBookingsOwnerState (Optional<Long> idUser, String state) throws ValidationException, MessageFailedException {
-            User user = validationUser(idUser);
-            List<Item> listItem = itemRepository.findByOwner_IdOrderById(idUser.get());
-            if (listItem.isEmpty()) throw new ValidationException("У пользователя нет вещей! findBookingsOwnerState()");
-            List<List<Booking>> list = new ArrayList<>();
-            for (Item item: listItem) {
-                Optional<List<Booking>> listBooking = bookingRepository.findByItem_IdOrderByStartDesc(item.getId());
-                if (listBooking.isPresent()) {
-                    list.add(listBooking.get());
-                }
+            try {
+                State.valueOf(state);
+            } catch (IllegalArgumentException e) {
+                throw new MessageFailedException();
             }
-            switch (state) {
-                case "ALL":
-                    List listAll = new ArrayList();
-                    for (List<Booking> listItemBooking : list) {
-                        for (Booking booking : listItemBooking) {
-                        if (booking.getStatus() != Status.REJECTED) listAll.add(booking);
-                        }
-                    }
+            User user = validationUser(idUser);
+            if (itemRepository.findByOwner_IdOrderById(idUser.get()).isEmpty()) throw new ValidationException("У пользователя нет вещей! findBookingsOwnerState()");
+            switch (State.valueOf(state)) {
+                case ALL:
                     log.info("Вся бронь собственника {}, со статусом ALL", user.getName());
-                    return BookingMapper.toListBookingDto(listAll);
-                case "CURRENT":
-                    List listCurrent = new ArrayList();
-                    LocalDateTime timeCurrent = LocalDateTime.now();
-                    for (List<Booking> listItemBooking : list) {
-                        for (Booking booking : listItemBooking) {
-                            if (timeCurrent.isBefore(booking.getEnd())
-                                    && timeCurrent.isAfter(booking.getStart())) listCurrent.add(booking);
-                        }
-                    }
+                    return BookingMapper.toListBookingDto(bookingRepository.searchListBookingALLOwner(idUser.get()));
+                case CURRENT:
                     log.info("Вся бронь собственника {}, со статусом CURRENT", user.getName());
-                    return BookingMapper.toListBookingDto(listCurrent);
-                case "PAST":
-                    List listPast = new ArrayList();
-                    LocalDateTime timePast = LocalDateTime.now();
-                    for (List<Booking> listItemBooking : list) {
-                        for (Booking booking : listItemBooking) {
-                            if (timePast.isAfter(booking.getEnd())) listPast.add(booking);
-                        }
-                    }
+                    return BookingMapper.toListBookingDto(
+                            bookingRepository.searchListBookingCurrentOwner(idUser.get(), LocalDateTime.now()));
+                case PAST:
                     log.info("Вся бронь собственника {}, со статусом PAST", user.getName());
-                    return BookingMapper.toListBookingDto(listPast);
-                case "FUTURE":
-                    List listFuture = new ArrayList();
-                    LocalDateTime timeFuture = LocalDateTime.now();
-                    for (List<Booking> listItemBooking : list) {
-                        for (Booking booking : listItemBooking) {
-                            if (timeFuture.isBefore(booking.getStart())) listFuture.add(booking);
-                        }
-                    }
+                    return BookingMapper.toListBookingDto(
+                            bookingRepository.searchListBookingPastOwner(idUser.get(), LocalDateTime.now()));
+                case FUTURE:
                     log.info("Вся бронь собственника {}, со статусом FUTURE", user.getName());
-                    return BookingMapper.toListBookingDto(listFuture);
-                case "WAITING":
-                    List listWaiting = new ArrayList();
-                    for (List<Booking> listItemBooking : list) {
-                        for (Booking booking : listItemBooking) {
-                            if (booking.getStatus() == Status.WAITING) listWaiting.add(booking);
-                        }
-                    }
+                    return BookingMapper.toListBookingDto(
+                            bookingRepository.searchListBookingFutureOwner(idUser.get(), LocalDateTime.now()));
+                case WAITING:
                     log.info("Вся бронь собственника {}, со статусом WAITING", user.getName());
-                    return BookingMapper.toListBookingDto(listWaiting);
-                case "REJECTED":
-                    List listRejected = new ArrayList();
-                    for (List<Booking> listItemBooking : list) {
-                        for (Booking booking : listItemBooking) {
-                            if (booking.getStatus() == Status.REJECTED) listRejected.add(booking);
-                        }
-                    }
+                    return BookingMapper.toListBookingDto(
+                            bookingRepository.searchListBookingWaitingOwner(idUser.get()));
+                case REJECTED:
                     log.info("Вся бронь собственника {}, со статусом REJECTED", user.getName());
-                    return BookingMapper.toListBookingDto(listRejected);
+                    return BookingMapper.toListBookingDto(
+                            bookingRepository.searchListBookingRejectedOwner(idUser.get()));
                 default:
                     throw new MessageFailedException();
             }

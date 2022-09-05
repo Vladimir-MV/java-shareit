@@ -36,7 +36,7 @@
         }
         @PatchMapping("/{bookingId}")
         protected BookingDtoOut putStatus(@RequestHeader("X-Sharer-User-Id") Optional<Long> idUser,
-            @PathVariable Optional<Long> bookingId, @RequestParam("approved") String approved)
+            @PathVariable Optional<Long> bookingId, @RequestParam("approved") Boolean approved)
             throws ValidationException {
             return bookingService.patchStatusBooking(idUser, bookingId, approved);
         }

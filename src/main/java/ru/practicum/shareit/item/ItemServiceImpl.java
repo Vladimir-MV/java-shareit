@@ -2,11 +2,11 @@
 
     import lombok.extern.slf4j.Slf4j;
     import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.data.domain.PageRequest;
     import org.springframework.stereotype.Service;
     import ru.practicum.shareit.booking.BookingRepository;
+    import ru.practicum.shareit.booking.dto.BookingMapper;
     import ru.practicum.shareit.booking.model.Booking;
-    import ru.practicum.shareit.booking.model.LastBooking;
-    import ru.practicum.shareit.booking.model.NextBooking;
     import ru.practicum.shareit.exception.ValidationException;
     import ru.practicum.shareit.item.dto.*;
     import ru.practicum.shareit.item.model.Comment;
@@ -39,13 +39,13 @@
         public ItemDto createItem (Optional<Long> idUser, ItemDto itemDto) throws ValidationException {
             validationUser(idUser);
             Item item = ItemMapper.toItem(itemDto);
-            item.setOwner(userRepository.findById(idUser.get()).get());
             if (item.getName() == null || item.getName() == "")
                 throw new ValidationException ("Не указаны данные - name для создания вещи! validationItem()");
             if (item.getDescription() == null || item.getDescription() == "")
                 throw new ValidationException ("Не указаны данные - description для создания вещи! validationItem()");
             if (item.getAvailable() == null)
                 throw new ValidationException ("Не указаны данные - available для создания вещи! validationItem()");
+            item.setOwner(userRepository.findById(idUser.get()).get());
             itemRepository.save(item);
             log.info("Добавлена вещь: {}", item.getName());
             return ItemMapper.toItemDto(item);
@@ -54,25 +54,15 @@
                 ItemDtoLastNext itemDtoLastNext = ItemMapper.toItemDtoLastNext(item);
                 Optional<List<Booking>> listBooking = bookingRepository.findByItem_Id(item.getId());
                 if ((listBooking.get().size() - 1) >= 0) {
-                    Booking bookingNext = listBooking.get().get(listBooking.get().size() - 1);
-                    NextBooking nextBooking = new NextBooking(
-                        bookingNext.getId(),
-                        bookingNext.getBooker().getId(),
-                        bookingNext.getStart(),
-                        bookingNext.getEnd());
-                    itemDtoLastNext.setNextBooking(nextBooking);
+                    itemDtoLastNext.setNextBooking(
+                            BookingMapper.toBookingDtoByIdTime(listBooking.get().get(listBooking.get().size() - 1)));
                 }
                 if ((listBooking.get().size() - 2) >= 0) {
-                    Booking bookingLast = listBooking.get().get(listBooking.get().size() - 2);
-                    LastBooking lastBooking = new LastBooking(
-                        bookingLast.getId(),
-                        bookingLast.getBooker().getId(),
-                        bookingLast.getStart(),
-                        bookingLast.getEnd());
-                    itemDtoLastNext.setLastBooking(lastBooking);
+                    itemDtoLastNext.setLastBooking(
+                            BookingMapper.toBookingDtoByIdTime(listBooking.get().get(listBooking.get().size() - 2)));
                 }
-            itemDtoLastNext.setComments(ItemMapper.toListItemDtoLastNext((commentRepository.findByItem_Id(item.getId()))));
-            return itemDtoLastNext;
+           itemDtoLastNext.setComments(ItemMapper.toListItemDtoLastNext((commentRepository.findByItem_Id(item.getId()))));
+           return itemDtoLastNext;
 
         }
         @Override
