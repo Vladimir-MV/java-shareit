@@ -48,9 +48,11 @@
         }
         @GetMapping()
         protected List<BookingDtoOut> findBooking(@RequestHeader("X-Sharer-User-Id") Optional<Long> userId,
+            @RequestParam(value = "from", required = false) Optional<Integer> from,
+            @RequestParam(value = "size", required = false) Optional<Integer> size,
             @RequestParam(value = "state", required = false, defaultValue = "ALL") String state)
             throws ValidationException, MessageFailedException {
-            return bookingService.findBookingsState(userId, state);
+            return bookingService.findBookingsState(userId, from, size, state);
         }
         @GetMapping("/")
         protected List<BookingDtoOut> findBooking(@RequestHeader("X-Sharer-User-Id") Optional<Long> userId)
@@ -59,8 +61,10 @@
         }
         @GetMapping("/owner")
         protected List<BookingDtoOut> findBookingOwner(@RequestHeader("X-Sharer-User-Id") Optional<Long> idUser,
+            @RequestParam(value = "from", required = false) Optional<Integer> from,
+            @RequestParam(value = "size", required = false) Optional<Integer> size,
             @RequestParam(value = "state", required = false, defaultValue = "ALL") String state)
             throws ValidationException, MessageFailedException {
-            return bookingService.findBookingsOwnerState(idUser, state);
+            return bookingService.findBookingsOwnerState(idUser, from, size, state);
         }
     }

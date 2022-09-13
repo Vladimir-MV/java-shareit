@@ -6,7 +6,6 @@
     import org.springframework.web.bind.annotation.ControllerAdvice;
     import org.springframework.web.bind.annotation.ExceptionHandler;
     import lombok.extern.slf4j.Slf4j;
-
     import java.sql.SQLException;
     import java.util.NoSuchElementException;
 

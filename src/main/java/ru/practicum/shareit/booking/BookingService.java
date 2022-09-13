@@ -17,9 +17,11 @@
 
         BookingDtoOut findBookingById(Optional<Long> idUser, Optional<Long> bookingId) throws ValidationException;
 
-        List<BookingDtoOut> findBookingsState(Optional<Long> idUser, String state) throws ValidationException, MessageFailedException;
+        List<BookingDtoOut> findBookingsState(Optional<Long> idUser, Optional<Integer> from, Optional<Integer> size, String state)
+                throws ValidationException, MessageFailedException;
 
-        List<BookingDtoOut> findBookingsOwnerState(Optional<Long> idUser, String state) throws ValidationException, MessageFailedException;
+        List<BookingDtoOut> findBookingsOwnerState(Optional<Long> idUser, Optional<Integer> from, Optional<Integer> size, String state)
+                throws ValidationException, MessageFailedException;
 
         List<BookingDtoOut> findBookingsAllById(Optional<Long> userId) throws ValidationException;
     }

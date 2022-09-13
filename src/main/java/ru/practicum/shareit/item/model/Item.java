@@ -1,5 +1,6 @@
     package ru.practicum.shareit.item.model;
 
+    import lombok.AllArgsConstructor;
     import lombok.Getter;
     import lombok.NoArgsConstructor;
     import lombok.Setter;
@@ -12,13 +13,14 @@
     @Getter
     @Setter
     @NoArgsConstructor
-
+    @AllArgsConstructor
     public class Item {
         public Item (String name, String description, Boolean available){
             this.name = name;
             this.description = description;
             this.available = available;
         }
+
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
@@ -30,7 +32,9 @@
                 cascade=CascadeType.ALL)
         @JoinColumn(name="owner_id")
         private User owner;
-        @Transient
+        @ManyToOne(fetch = FetchType.EAGER,
+                cascade=CascadeType.ALL)
+        @JoinColumn(name = "request_id")
         private ItemRequest request;
 
     }

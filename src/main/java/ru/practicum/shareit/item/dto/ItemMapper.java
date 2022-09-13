@@ -3,7 +3,6 @@
     import ru.practicum.shareit.item.model.Comment;
     import ru.practicum.shareit.item.model.Item;
     import ru.practicum.shareit.user.dto.UserMapper;
-
     import java.util.ArrayList;
     import java.util.List;
 
@@ -15,8 +14,8 @@
                     item.getName(),
                     item.getDescription(),
                     item.getAvailable(),
-                    UserMapper.toUserDto(item.getOwner())
-                    //item.getRequest() != null ? item.getRequest().getId() : item.getId()
+                    UserMapper.toUserDto(item.getOwner()),
+                    item.getRequest() != null ? item.getRequest().getId() : item.getId()
             );
         }
         public static List<CommentDto> toListCommentDto (List<Comment> listComment) {

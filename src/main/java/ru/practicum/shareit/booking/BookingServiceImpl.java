@@ -10,14 +10,13 @@
     import ru.practicum.shareit.item.model.Item;
     import ru.practicum.shareit.user.UserRepository;
     import ru.practicum.shareit.user.model.User;
-
+    import javax.persistence.EntityManager;
+    import javax.persistence.PersistenceContext;
     import java.time.LocalDateTime;
-    import java.util.ArrayList;
     import java.util.List;
     import java.util.NoSuchElementException;
     import java.util.Optional;
 
-    import static ru.practicum.shareit.booking.State.*;
 
     @Slf4j
     @Service
@@ -26,6 +25,9 @@
         private BookingRepository bookingRepository;
         private ItemRepository itemRepository;
         private UserRepository userRepository;
+
+        @PersistenceContext
+        public EntityManager em;
 
         public BookingServiceImpl (BookingRepository bookingRepository, ItemRepository itemRepository,
                                    UserRepository userRepository) {
@@ -105,7 +107,6 @@
             List<Booking> list =  bookingRepository.findByBooker_IdOrderByStartDesc(user.getId());
             log.info("Вся бронь пользователя {} ", user.getName());
             return BookingMapper.toListBookingDto(list);
-
         }
         @Override
         public BookingDtoOut findBookingById(Optional<Long> idUser, Optional<Long> bookingId) throws ValidationException {
@@ -119,7 +120,7 @@
             throw new NoSuchElementException("Пользователю информация о бронировании не доступна, findBookingById");
         }
         @Override
-        public List<BookingDtoOut> findBookingsState(Optional<Long> idUser, String state)
+        public List<BookingDtoOut> findBookingsState(Optional<Long> idUser, Optional<Integer> from, Optional<Integer> size, String state)
                 throws ValidationException, MessageFailedException {
             try {
                 State.valueOf(state);
@@ -129,67 +130,128 @@
             User user = validationUser(idUser);
                 switch (State.valueOf(state)) {
                     case ALL:
+                        String request = "select b from Booking b where b.booker.id = ?1 order by b.start desc";
+                        LocalDateTime time = null;
+                        List <Booking> listBooking = requestBookingRepository (idUser, request, time, from, size);
                         log.info("Вся бронь пользователя {}, со статусом ALL", user.getName());
-                        return BookingMapper.toListBookingDto(bookingRepository.searchListBookingALL(user.getId()));
+                        return BookingMapper.toListBookingDto(listBooking);
                     case CURRENT:
+                        request = "select b from Booking b where b.booker.id = ?1 and ?2 between b.start and b.end order by b.start desc";
+                        time = LocalDateTime.now();
+                        listBooking = requestBookingRepository (idUser, request, time, from, size);
                         log.info("Вся бронь пользователя {}, со статусом CURRENT", user.getName());
-                        return BookingMapper.toListBookingDto(
-                                bookingRepository.searchListBookingCurrent(user.getId(), LocalDateTime.now()));
+                        return BookingMapper.toListBookingDto(listBooking);
                     case PAST:
+                        request = "select b from Booking b where b.booker.id = ?1 and b.end < ?2 and b.status <> 'REJECTED' order by b.start desc";
+                        time = LocalDateTime.now();
+                        listBooking = requestBookingRepository (idUser, request, time, from, size);
                         log.info("Вся бронь пользователя {}, со статусом PAST", user.getName());
-                        return BookingMapper.toListBookingDto(
-                                bookingRepository.searchListBookingPast(user.getId(), LocalDateTime.now()));
+                        return BookingMapper.toListBookingDto(listBooking);
                     case FUTURE:
+                        request = "select b from Booking b where b.booker.id = ?1 and b.start > ?2 order by b.start desc";
+                        time = LocalDateTime.now();
+                        listBooking = requestBookingRepository (idUser, request, time, from, size);
                         log.info("Вся бронь пользователя {}, со статусом FUTURE", user.getName());
-                        return BookingMapper.toListBookingDto(
-                                bookingRepository.searchListBookingFuture(user.getId(), LocalDateTime.now()));
+                        return BookingMapper.toListBookingDto(listBooking);
                     case WAITING:
+                        request = "select b from Booking b where b.booker.id = ?1 and b.status = 'WAITING' order by b.start desc";
+                        time = null;
+                        listBooking = requestBookingRepository (idUser, request, time, from, size);
                         log.info("Вся бронь пользователя {}, со статусом WAITING", user.getName());
-                        return BookingMapper.toListBookingDto(
-                                bookingRepository.searchListBookingWaiting(user.getId()));
+                        return BookingMapper.toListBookingDto(listBooking);
                     case REJECTED:
+                        request = "select b from Booking b where b.booker.id = ?1 and b.status = 'REJECTED' order by b.start desc";
+                        time = null;
+                        listBooking = requestBookingRepository (idUser, request, time, from, size);
                         log.info("Вся бронь пользователя {}, со статусом REJECTED", user.getName());
-                        return BookingMapper.toListBookingDto(
-                                bookingRepository.searchListBookingRejected(user.getId()));
+                        return BookingMapper.toListBookingDto(listBooking);
                     default:
                         throw new MessageFailedException();
                 }
         }
+        public List<Booking> requestBookingRepository (Optional<Long> idUser, String request, LocalDateTime time,
+                                                       Optional<Integer> from, Optional<Integer> size) throws ValidationException {
+            List<Booking> list;
+            if (!from.isPresent() || !size.isPresent()) {
+                if (time == null) {
+                    list = em.createQuery(request, Booking.class)
+                            .setParameter(1, idUser.get())
+                            .getResultList();
+                } else {
+                    list = em.createQuery(request, Booking.class)
+                            .setParameter(1, idUser.get())
+                            .setParameter (2, time)
+                            .getResultList();
+                }
+            } else if (from.get() < 0 || size.get() <= 0) {
+                throw new ValidationException("Параметры from, size заданы не верно! requestBookingRepository()");
+            } else if (time == null) {
+                list = em.createQuery(request, Booking.class)
+                        .setParameter (1, idUser.get())
+                        .setFirstResult(from.get())
+                        .setMaxResults(size.get())
+                        .getResultList();
+            } else {
+                list = em.createQuery(request, Booking.class)
+                        .setParameter (1, idUser.get())
+                        .setParameter (2, time)
+                        .setFirstResult(from.get())
+                        .setMaxResults(size.get())
+                        .getResultList();
+            }
+            return list;
+        }
         @Override
-        public List<BookingDtoOut> findBookingsOwnerState (Optional<Long> idUser, String state) throws ValidationException, MessageFailedException {
+        public List<BookingDtoOut> findBookingsOwnerState (Optional<Long> idUser, Optional<Integer> from,
+            Optional<Integer> size, String state) throws ValidationException, MessageFailedException {
             try {
                 State.valueOf(state);
             } catch (IllegalArgumentException e) {
                 throw new MessageFailedException();
             }
             User user = validationUser(idUser);
-            if (itemRepository.findByOwner_IdOrderById(idUser.get()).isEmpty()) throw new ValidationException("У пользователя нет вещей! findBookingsOwnerState()");
+            if (itemRepository.findByOwner_IdOrderById(idUser.get()).isEmpty())
+                throw new ValidationException("У пользователя нет вещей! findBookingsOwnerState()");
             switch (State.valueOf(state)) {
                 case ALL:
+                    String request = "select b from Booking b where b.item.owner.id = ?1 order by b.start desc";
+                    LocalDateTime time = null;
+                    List <Booking> listBooking = requestBookingRepository (idUser, request, time, from, size);
                     log.info("Вся бронь собственника {}, со статусом ALL", user.getName());
-                    return BookingMapper.toListBookingDto(bookingRepository.searchListBookingALLOwner(idUser.get()));
+                    return BookingMapper.toListBookingDto(listBooking);
                 case CURRENT:
+                    request = "select b from Booking b where b.item.owner.id = ?1 and ?2 between b.start and b.end order by b.start desc";
+                    time = LocalDateTime.now();
+                    listBooking = requestBookingRepository (idUser, request, time, from, size);
                     log.info("Вся бронь собственника {}, со статусом CURRENT", user.getName());
-                    return BookingMapper.toListBookingDto(
-                            bookingRepository.searchListBookingCurrentOwner(idUser.get(), LocalDateTime.now()));
+                    return BookingMapper.toListBookingDto(listBooking);
                 case PAST:
+                    request = "select b from Booking b where b.item.owner.id = ?1 and b.end < ?2 and b.status <> 'REJECTED' order by b.start desc";
+                    time = LocalDateTime.now();
+                    listBooking = requestBookingRepository (idUser, request, time, from, size);
                     log.info("Вся бронь собственника {}, со статусом PAST", user.getName());
-                    return BookingMapper.toListBookingDto(
-                            bookingRepository.searchListBookingPastOwner(idUser.get(), LocalDateTime.now()));
+                    return BookingMapper.toListBookingDto(listBooking);
                 case FUTURE:
+                    request = "select b from Booking b where b.item.owner.id = ?1 and b.start > ?2 order by b.start desc";
+                    time = LocalDateTime.now();
+                    listBooking = requestBookingRepository (idUser, request, time, from, size);
                     log.info("Вся бронь собственника {}, со статусом FUTURE", user.getName());
-                    return BookingMapper.toListBookingDto(
-                            bookingRepository.searchListBookingFutureOwner(idUser.get(), LocalDateTime.now()));
+                    return BookingMapper.toListBookingDto(listBooking);
                 case WAITING:
+                    request = "select b from Booking b where b.item.owner.id = ?1 and b.status = 'WAITING' order by b.start desc";
+                    time = null;
+                    listBooking = requestBookingRepository (idUser, request, time, from, size);
                     log.info("Вся бронь собственника {}, со статусом WAITING", user.getName());
-                    return BookingMapper.toListBookingDto(
-                            bookingRepository.searchListBookingWaitingOwner(idUser.get()));
+                    return BookingMapper.toListBookingDto(listBooking);
                 case REJECTED:
+                    request = "select b from Booking b where b.item.owner.id = ?1 and b.status = 'REJECTED' order by b.start desc";
+                    time = null;
+                    listBooking = requestBookingRepository (idUser, request, time, from, size);
                     log.info("Вся бронь собственника {}, со статусом REJECTED", user.getName());
-                    return BookingMapper.toListBookingDto(
-                            bookingRepository.searchListBookingRejectedOwner(idUser.get()));
+                    return BookingMapper.toListBookingDto(listBooking);
                 default:
                     throw new MessageFailedException();
             }
         }
+
     }
