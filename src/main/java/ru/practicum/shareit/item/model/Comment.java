@@ -16,7 +16,8 @@
     @NoArgsConstructor
     @AllArgsConstructor
     public class Comment {
-        public Comment (String text) {
+        public Comment (Long id, String text) {
+            this.id = id;
             this.text = text;
         }
 

@@ -4,6 +4,7 @@
     import lombok.Getter;
     import lombok.NoArgsConstructor;
     import lombok.Setter;
+    import ru.practicum.shareit.user.dto.UserDto;
     import ru.practicum.shareit.user.model.User;
     import javax.persistence.*;
     import java.time.LocalDateTime;
@@ -15,7 +16,8 @@
     @AllArgsConstructor
     public class ItemRequest {
 
-        public ItemRequest (String description) {
+        public ItemRequest (Long id, String description, UserDto requestor, LocalDateTime created) {
+            this.id = id;
             this.description = description;
         }
         @Id

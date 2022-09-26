@@ -56,7 +56,7 @@
         }
 
         @GetMapping("/search")
-        protected List<ItemDto> findItemById(@RequestHeader("X-Sharer-User-Id") Optional<Long> idUser,
+        protected List<ItemDto> findItemByIdSearch(@RequestHeader("X-Sharer-User-Id") Optional<Long> idUser,
             @RequestParam("text") String text,
             @RequestParam(value = "from", required = false) Optional<Integer> from,
             @RequestParam(value = "size", required = false) Optional<Integer> size

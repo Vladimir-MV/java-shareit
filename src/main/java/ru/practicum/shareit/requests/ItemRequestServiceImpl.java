@@ -57,7 +57,8 @@
             List<ItemRequestDto> list = ItemRequestMapper.toListItemRequestDto(
                     itemRequestRepository.findByRequestor_IdOrderByCreatedDesc(user.getId()));
             for (ItemRequestDto itemRequestDto: list){
-                itemRequestDto.setItems(ItemMapper.toListItemDto(itemRepository.findByRequest_IdOrderByCreated(itemRequestDto.getId()).get()));
+                itemRequestDto.setItems(ItemMapper.toListItemDto(
+                        itemRepository.findByRequest_IdOrderByCreated(itemRequestDto.getId()).get()));
             }
             log.info("Получен список запросов пользователя: {}", user.getName());
             return list;

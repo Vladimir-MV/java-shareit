@@ -1,6 +1,9 @@
     package ru.practicum.shareit.booking.dto;
 
     import ru.practicum.shareit.booking.model.Booking;
+    import ru.practicum.shareit.item.dto.ItemMapper;
+    import ru.practicum.shareit.user.dto.UserMapper;
+
     import java.util.ArrayList;
     import java.util.List;
 
@@ -11,15 +14,18 @@
                     booking.getStart(),
                     booking.getEnd(),
                     booking.getStatus(),
-                    booking.getBooker(),
-                    booking.getItem()
+                    UserMapper.toUserDto(booking.getBooker()),
+                    ItemMapper.toItemDto(booking.getItem())
 
             );
         }
 
         public static BookingDtoById toBookingDtoById(Booking booking) {
             return new BookingDtoById (
-                    booking.getId()
+                    booking.getId(),
+                    booking.getBooker().getId(),
+                    booking.getStart(),
+                    booking.getEnd()
             );
         }
         public static BookingDtoById toBookingDtoByIdTime(Booking booking) {

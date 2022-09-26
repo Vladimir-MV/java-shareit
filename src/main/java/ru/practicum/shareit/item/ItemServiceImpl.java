@@ -25,7 +25,6 @@
         private UserRepository userRepository;
         private CommentRepository commentRepository;
         private BookingRepository bookingRepository;
-
         private ItemRequestRepository itemRequestRepository;
         @PersistenceContext
         public EntityManager em;
@@ -39,6 +38,12 @@
             this.bookingRepository = bookingRepository;
             this.itemRequestRepository = itemRequestRepository;
         }
+
+//        public ItemServiceImpl() {
+//
+//        }
+
+
         @Override
         public ItemDto createItem (Optional<Long> idUser, ItemDto itemDto) throws ValidationException {
             validationUser(idUser);
@@ -136,10 +141,10 @@
                 if (item.getOwner().getId() != idUser.get())
                     throw new NoSuchElementException("Владелец вещи указан не верно! deleteItem()");
                 itemRepository.delete(item);
-                log.info("Пользователь: {} удален.", item);
+                log.info("Вещь: {} удалена.", item.getName());
                 return ItemMapper.toItemDto(item);
             }
-            throw new NoSuchElementException("Переменные пути указаны не верно! deleteItemService()");
+            throw new NoSuchElementException("Id вещи не указан! deleteItemService()");
         }
         @Override
         public List<ItemDto> findItemSearch (Optional<Long> idUser, String text, Optional<Integer> from, Optional<Integer> size) throws ValidationException {

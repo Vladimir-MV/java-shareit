@@ -5,6 +5,7 @@
     import lombok.NoArgsConstructor;
     import lombok.Setter;
     import ru.practicum.shareit.item.dto.ItemDto;
+    import ru.practicum.shareit.user.dto.UserDto;
     import ru.practicum.shareit.user.model.User;
     import javax.validation.constraints.NotBlank;
     import java.time.LocalDateTime;
@@ -15,7 +16,7 @@
     @NoArgsConstructor
     @AllArgsConstructor
     public class ItemRequestDto {
-        public ItemRequestDto(Long id, String description, User requestor, LocalDateTime created) {
+        public ItemRequestDto(Long id, String description, UserDto requestor, LocalDateTime created) {
             this.id = id;
             this.description = description;
             this.requestor = requestor;
@@ -25,7 +26,7 @@
         private Long id;
         @NotBlank
         private String description;
-        private User requestor;
+        private UserDto requestor;
         private LocalDateTime created;
         private List<ItemDto> items;
 

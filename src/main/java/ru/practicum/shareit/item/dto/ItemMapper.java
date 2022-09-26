@@ -3,6 +3,8 @@
     import ru.practicum.shareit.item.model.Comment;
     import ru.practicum.shareit.item.model.Item;
     import ru.practicum.shareit.user.dto.UserMapper;
+    import ru.practicum.shareit.user.model.User;
+
     import java.util.ArrayList;
     import java.util.List;
 
@@ -27,6 +29,7 @@
         }
         public static Item toItem(ItemDto itemDto) {
             return new Item (
+                    itemDto.getId(),
                     itemDto.getName(),
                     itemDto.getDescription(),
                     itemDto.getAvailable()
@@ -59,6 +62,7 @@
 
         public static Comment toComment(CommentDto commentDto) {
             return new Comment (
+                    commentDto.getId(),
                     commentDto.getText()
             );
         }
