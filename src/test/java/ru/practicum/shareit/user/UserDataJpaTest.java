@@ -6,16 +6,19 @@
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
     import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+    import org.springframework.test.annotation.DirtiesContext;
     import ru.practicum.shareit.user.dto.UserDto;
     import ru.practicum.shareit.user.dto.UserMapper;
     import ru.practicum.shareit.user.model.User;
     import javax.persistence.TypedQuery;
+    import javax.transaction.Transactional;
+
     import static org.hamcrest.MatcherAssert.assertThat;
     import static org.hamcrest.Matchers.*;
 
+    @Transactional
     @ExtendWith(MockitoExtension.class)
     @DataJpaTest
-
     public class UserDataJpaTest {
         @Autowired
         private TestEntityManager em;
