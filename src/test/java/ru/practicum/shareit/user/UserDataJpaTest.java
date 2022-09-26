@@ -1,8 +1,6 @@
     package ru.practicum.shareit.user;
 
     import org.junit.jupiter.api.Test;
-    import org.junit.jupiter.api.extension.ExtendWith;
-    import org.mockito.junit.jupiter.MockitoExtension;
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
     import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
@@ -11,14 +9,11 @@
     import ru.practicum.shareit.user.dto.UserMapper;
     import ru.practicum.shareit.user.model.User;
     import javax.persistence.TypedQuery;
-    import javax.transaction.Transactional;
-
     import static org.hamcrest.MatcherAssert.assertThat;
     import static org.hamcrest.Matchers.*;
 
-    @Transactional
-    @ExtendWith(MockitoExtension.class)
     @DataJpaTest
+    @DirtiesContext
     public class UserDataJpaTest {
         @Autowired
         private TestEntityManager em;

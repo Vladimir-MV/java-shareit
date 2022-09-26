@@ -8,6 +8,8 @@
     import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
     import org.springframework.test.annotation.DirtiesContext;
     import ru.practicum.shareit.requests.model.ItemRequest;
+    import ru.practicum.shareit.user.UserRepository;
+    import ru.practicum.shareit.user.dto.UserMapper;
     import ru.practicum.shareit.user.model.User;
     import javax.persistence.TypedQuery;
     import javax.transaction.Transactional;
@@ -15,12 +17,13 @@
     import static org.hamcrest.MatcherAssert.assertThat;
     import static org.hamcrest.Matchers.*;
 
-    @Transactional
-    @ExtendWith(MockitoExtension.class)
     @DataJpaTest
+    @DirtiesContext
     public class itemRequestDataJpaTest {
         @Autowired
         private TestEntityManager em;
+        @Autowired
+        private UserRepository userRepository;
         @Autowired
         private ItemRequestRepository itemRequestRepository;
 
@@ -33,8 +36,9 @@
              ItemRequest itemRequest = new ItemRequest(
                     1L,
                     "description",
-                    user,
+                     user,
                     LocalDateTime.of(2022, 4, 4, 4, 4, 4));
+            userRepository.save(user);
             itemRequestRepository.save(itemRequest);
             TypedQuery<ItemRequest> query = em.getEntityManager().createQuery("Select i from ItemRequest i where i.id = :id", ItemRequest.class);
             ItemRequest itemRequestQuery = query

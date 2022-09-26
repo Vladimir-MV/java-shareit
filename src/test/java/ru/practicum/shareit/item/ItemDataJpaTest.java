@@ -1,28 +1,29 @@
     package ru.practicum.shareit.item;
 
     import org.junit.jupiter.api.Test;
-    import org.junit.jupiter.api.extension.ExtendWith;
-    import org.mockito.junit.jupiter.MockitoExtension;
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
     import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
     import org.springframework.test.annotation.DirtiesContext;
-    import org.springframework.test.context.jdbc.Sql;
     import ru.practicum.shareit.item.model.Item;
+    import ru.practicum.shareit.requests.ItemRequestRepository;
     import ru.practicum.shareit.requests.model.ItemRequest;
+    import ru.practicum.shareit.user.UserRepository;
     import ru.practicum.shareit.user.model.User;
     import javax.persistence.TypedQuery;
-    import javax.transaction.Transactional;
     import java.time.LocalDateTime;
     import static org.hamcrest.MatcherAssert.assertThat;
     import static org.hamcrest.Matchers.*;
 
-    @Transactional
-    @ExtendWith(MockitoExtension.class)
     @DataJpaTest
+    @DirtiesContext
     public class ItemDataJpaTest {
         @Autowired
         private TestEntityManager em;
+        @Autowired
+        private UserRepository userRepository;
+        @Autowired
+        private ItemRequestRepository itemRequestRepository;
         @Autowired
         private ItemRepository itemRepository;
         User user = new User(
@@ -48,6 +49,9 @@
 
         @Test
         void createItemDataJpaTest() {
+            userRepository.save(user);
+            userRepository.save(userNew);
+            itemRequestRepository.save(itemRequest);
             itemRepository.save(item);
             TypedQuery<Item> query = em.getEntityManager().createQuery("Select i from Item i where i.id = :id", Item.class);
             Item itemQuery = query
