@@ -2,6 +2,8 @@
 
     import lombok.extern.slf4j.Slf4j;
     import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.data.domain.PageRequest;
+    import org.springframework.data.domain.Pageable;
     import org.springframework.stereotype.Service;
     import ru.practicum.shareit.booking.BookingRepository;
     import ru.practicum.shareit.booking.dto.BookingMapper;
@@ -38,11 +40,6 @@
             this.bookingRepository = bookingRepository;
             this.itemRequestRepository = itemRequestRepository;
         }
-
-//        public ItemServiceImpl() {
-//
-//        }
-
 
         @Override
         public ItemDto createItem (Optional<Long> idUser, ItemDto itemDto) throws ValidationException {
@@ -152,24 +149,16 @@
             if (text == null || text.length() == 0) return Collections.emptyList();
             List<Item> listItem;
             if (!from.isPresent() || !size.isPresent()) {
-                listItem = itemRepository.searchListItem(text);
-            } else if (from.get() < 0 || size.get() <= 0) {
-                throw new ValidationException("Параметры from, size заданы не верно! findItemSearch()");
+                listItem = itemRepository.searchListItemText(text);
             } else {
-                listItem = em.createQuery("select i from Item i " +
-                "where upper(i.name) like upper(concat('%', ?1, '%')) " +
-                " or upper(i.description) like upper(concat('%', ?1, '%')) " +
-                "and i.available is true", Item.class)
-                .setParameter(1, text)
-                .setFirstResult(from.get() - 1)
-                .setMaxResults(size.get())
-                .getResultList();
+                final Pageable pageable = PageRequest.of(from.get(), size.get());
+                listItem = itemRepository.searchListItem(text, pageable).getContent();
             }
+
             if (listItem.isEmpty()) throw new ValidationException("По заданным параметрам вещи не найдены! findItemSearch ()");
         log.info("По заданным парамеррам найдены вещи! findItemSearch ()");
         return ItemMapper.toListItemDto(listItem);
         }
-
         public Optional<User> validationUser (Optional<Long> idUser) throws ValidationException {
             if (!idUser.isPresent()) throw new ValidationException("Отсутствует id владельца! validationUser()");
             Optional<User> user = userRepository.findById(idUser.get());

@@ -6,6 +6,7 @@
     import ru.practicum.shareit.exception.MessageFailedException;
     import ru.practicum.shareit.exception.ValidationException;
 
+    import javax.validation.constraints.PositiveOrZero;
     import java.util.List;
     import java.util.Optional;
 
@@ -20,7 +21,7 @@
         List<BookingDtoOut> findBookingsState(Optional<Long> idUser, Optional<Integer> from, Optional<Integer> size, String state)
                 throws ValidationException, MessageFailedException;
 
-        List<BookingDtoOut> findBookingsOwnerState(Optional<Long> idUser, Optional<Integer> from, Optional<Integer> size, String state)
+        List<BookingDtoOut> findBookingsOwnerState(Optional<Long> idUser, @PositiveOrZero Optional<Integer> from, @PositiveOrZero Optional<Integer> size, String state)
                 throws ValidationException, MessageFailedException;
 
         List<BookingDtoOut> findBookingsAllById(Optional<Long> userId) throws ValidationException;

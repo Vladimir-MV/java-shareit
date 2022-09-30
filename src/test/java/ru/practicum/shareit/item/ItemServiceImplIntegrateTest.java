@@ -146,7 +146,7 @@
             itemRequestRepository.save(itemRequest);
             itemRepository.save(item);
             List<ItemDto> itemDtoListTest = itemService.findItemSearch(Optional.of(1L), "отвертка",
-                    Optional.of(1), Optional.of(1));
+                    Optional.of(0), Optional.of(1));
             Assertions.assertEquals(1L, itemDtoListTest.get(0).getId());
             Assertions.assertEquals("хорошая", itemDtoListTest.get(0).getDescription());
             Assertions.assertEquals("отвертка", itemDtoListTest.get(0).getName());

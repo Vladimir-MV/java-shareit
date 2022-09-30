@@ -8,6 +8,7 @@
     import ru.practicum.shareit.item.dto.ItemDtoLastNext;
     import javax.servlet.http.HttpServletRequest;
     import javax.validation.Valid;
+    import javax.validation.constraints.PositiveOrZero;
     import java.util.List;
     import java.util.Optional;
 
@@ -58,8 +59,8 @@
         @GetMapping("/search")
         protected List<ItemDto> findItemByIdSearch(@RequestHeader("X-Sharer-User-Id") Optional<Long> idUser,
             @RequestParam("text") String text,
-            @RequestParam(value = "from", required = false) Optional<Integer> from,
-            @RequestParam(value = "size", required = false) Optional<Integer> size
+            @PositiveOrZero @RequestParam(value = "from", required = false) Optional<Integer> from,
+            @PositiveOrZero @RequestParam(value = "size", required = false) Optional<Integer> size
         ) throws ValidationException {
             return itemService.findItemSearch(idUser, text, from, size);
         }

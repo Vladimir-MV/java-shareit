@@ -2,6 +2,8 @@
 
     import lombok.extern.slf4j.Slf4j;
     import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.data.domain.PageRequest;
+    import org.springframework.data.domain.Pageable;
     import org.springframework.stereotype.Service;
     import ru.practicum.shareit.exception.ValidationException;
     import ru.practicum.shareit.item.ItemRepository;
@@ -52,7 +54,7 @@
                 throw new NoSuchElementException("Указанный пользователь не найден! validationUser()");
             return user.get();
         }
-        public List<ItemRequestDto> findAllItemRequest(Optional<Long> idUser) throws ValidationException {
+        public List<ItemRequestDto> findAllItemRequest(Optional<Long> idUser) {
             User user = validationUser(idUser);
             List<ItemRequestDto> list = ItemRequestMapper.toListItemRequestDto(
                     itemRequestRepository.findByRequestor_IdOrderByCreatedDesc(user.getId()));
@@ -77,21 +79,17 @@
             return itemRequestDto;
         }
         public List<ItemRequestDto> findItemRequestPageable (Optional<Long> idUser,
-            Optional<Integer> from, Optional<Integer> size) throws ValidationException {
+            Optional<Integer> from, Optional<Integer> size) {
             User user = validationUser(idUser);
             if (!from.isPresent() || !size.isPresent()) return Collections.emptyList();
-            if (from.get() < 0 || size.get() <= 0)
-                throw new ValidationException("Параметры from, size заданы не верно! findItemRequestPageable()");
-            List<ItemRequest> requestList = em.createQuery("SELECT i FROM ItemRequest i "
-                            + "WHERE i.requestor.id <> ?1 ORDER BY i.created DESC", ItemRequest.class)
-                    .setParameter(1, idUser.get())
-                    .setFirstResult(from.get())
-                    .setMaxResults(size.get())
-                    .getResultList();
+            final Pageable pageable = PageRequest.of(from.get(), size.get());
+            List<ItemRequest> requestList = itemRequestRepository
+                            .findByItemRequestListRequestor(idUser.get(), pageable).getContent();
             List<ItemRequestDto> itemRequestDtoList = ItemRequestMapper.toListItemRequestDto(requestList);
             for (ItemRequestDto itemRequest: itemRequestDtoList) {
                 if (itemRepository.findByRequest_IdOrderByCreated(itemRequest.getId()).isPresent())
-                    itemRequest.setItems(ItemMapper.toListItemDto(itemRepository.findByRequest_IdOrderByCreated(itemRequest.getId()).get()));
+                    itemRequest.setItems(ItemMapper.toListItemDto(itemRepository
+                            .findByRequest_IdOrderByCreated(itemRequest.getId()).get()));
             }
             log.info("Пользователь {} получил список запросов.", user.getName());
             return itemRequestDtoList;
