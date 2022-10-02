@@ -3,6 +3,7 @@
     import lombok.extern.slf4j.Slf4j;
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.data.domain.PageRequest;
+    import org.springframework.data.domain.Pageable;
     import org.springframework.stereotype.Service;
     import ru.practicum.shareit.booking.BookingRepository;
     import ru.practicum.shareit.booking.dto.BookingMapper;
@@ -11,13 +12,13 @@
     import ru.practicum.shareit.item.dto.*;
     import ru.practicum.shareit.item.model.Comment;
     import ru.practicum.shareit.item.model.Item;
+    import ru.practicum.shareit.requests.ItemRequestRepository;
     import ru.practicum.shareit.user.UserRepository;
     import ru.practicum.shareit.user.model.User;
+    import javax.persistence.EntityManager;
+    import javax.persistence.PersistenceContext;
     import java.time.LocalDateTime;
-    import java.util.ArrayList;
-    import java.util.List;
-    import java.util.NoSuchElementException;
-    import java.util.Optional;
+    import java.util.*;
 
     @Slf4j
     @Service
@@ -26,19 +27,25 @@
         private UserRepository userRepository;
         private CommentRepository commentRepository;
         private BookingRepository bookingRepository;
+        private ItemRequestRepository itemRequestRepository;
+        @PersistenceContext
+        public EntityManager em;
 
         @Autowired
         public ItemServiceImpl (ItemRepository itemRepository, UserRepository userRepository,
-                                CommentRepository commentRepository, BookingRepository bookingRepository){
+            CommentRepository commentRepository, BookingRepository bookingRepository, ItemRequestRepository itemRequestRepository){
             this.itemRepository = itemRepository;
             this.userRepository = userRepository;
             this.commentRepository = commentRepository;
             this.bookingRepository = bookingRepository;
+            this.itemRequestRepository = itemRequestRepository;
         }
+
         @Override
         public ItemDto createItem (Optional<Long> idUser, ItemDto itemDto) throws ValidationException {
             validationUser(idUser);
             Item item = ItemMapper.toItem(itemDto);
+            if (itemDto.getRequestId() != null) item.setRequest(itemRequestRepository.findById(itemDto.getRequestId()).get());
             if (item.getName() == null || item.getName() == "")
                 throw new ValidationException ("Не указаны данные - name для создания вещи! validationItem()");
             if (item.getDescription() == null || item.getDescription() == "")
@@ -65,18 +72,31 @@
            return itemDtoLastNext;
 
         }
+
         @Override
-        public List<ItemDtoLastNext> findAllItemsOwner (Optional<Long> idUser) throws ValidationException {
-            Optional<User> user = validationUser(idUser);
-            List<Item> listItem = itemRepository.findByOwner_IdOrderById(user.get().getId());
+        public List<ItemDtoLastNext> findAllItemsOwner (Optional<Long> idUser, Optional<Integer> from, Optional<Integer> size) throws ValidationException {
+            validationUser(idUser);
+            List<Item> listItem;
+            if (!from.isPresent() || !size.isPresent()) {
+                listItem = itemRepository.findByOwner_IdOrderById(idUser.get());
+            } else if (from.get() < 0 || size.get() <= 0) {
+                throw new ValidationException("Параметры from, size заданы не верно! findAllItemsOwner()");
+            } else {
+                listItem = em.createQuery("SELECT i FROM Item i WHERE i.owner.id = ?1 ORDER BY i.id", Item.class)
+                .setParameter(1, idUser.get())
+                .setFirstResult(from.get() - 1)
+                .setMaxResults(size.get())
+                .getResultList();
+            }
             if (listItem.isEmpty()) throw new ValidationException("У пользователя нет вещей! findAllItemsOwner()");
             List<ItemDtoLastNext> list = new ArrayList<>();
-            for (Item item: listItem) {
-                    list.add(findLastNextBooking(item));
-                }
+            for (Item item : listItem) {
+                list.add(findLastNextBooking(item));
+            }
             log.info("Текущее количество вещей пользователя {}, в списке: {}", idUser.get(), list.size());
             return list;
         }
+
         @Override
         public ItemDtoLastNext findItemById (Optional<Long> idUser, Optional<Long> id) throws ValidationException {
             validationUser(idUser);
@@ -118,19 +138,26 @@
                 if (item.getOwner().getId() != idUser.get())
                     throw new NoSuchElementException("Владелец вещи указан не верно! deleteItem()");
                 itemRepository.delete(item);
-                log.info("Пользователь: {} удален.", item);
+                log.info("Вещь: {} удалена.", item.getName());
                 return ItemMapper.toItemDto(item);
             }
-            throw new NoSuchElementException("Переменные пути указаны не верно! deleteItemService()");
+            throw new NoSuchElementException("Id вещи не указан! deleteItemService()");
         }
         @Override
-        public List<ItemDto> findItemSearch (Optional<Long> idUser, String text) throws ValidationException {
+        public List<ItemDto> findItemSearch (Optional<Long> idUser, String text, Optional<Integer> from, Optional<Integer> size) throws ValidationException {
             validationUser(idUser);
-            if (text == null || text.length() == 0) return new ArrayList<ItemDto>();
-            if (!itemRepository.searchListItem(text).isPresent())
-                throw new ValidationException("По заданным парамеррам вещи не найдены! validationComment()");
-        log.info("По заданным парамеррам найдены вещи! validationComment()");
-        return ItemMapper.toListItemDto(itemRepository.searchListItem(text).get());
+            if (text == null || text.length() == 0) return Collections.emptyList();
+            List<Item> listItem;
+            if (!from.isPresent() || !size.isPresent()) {
+                listItem = itemRepository.searchListItemText(text);
+            } else {
+                final Pageable pageable = PageRequest.of(from.get(), size.get());
+                listItem = itemRepository.searchListItem(text, pageable).getContent();
+            }
+
+            if (listItem.isEmpty()) throw new ValidationException("По заданным параметрам вещи не найдены! findItemSearch ()");
+        log.info("По заданным парамеррам найдены вещи! findItemSearch ()");
+        return ItemMapper.toListItemDto(listItem);
         }
         public Optional<User> validationUser (Optional<Long> idUser) throws ValidationException {
             if (!idUser.isPresent()) throw new ValidationException("Отсутствует id владельца! validationUser()");

@@ -40,13 +40,13 @@
             if (id.isPresent()) {
                 User user = userRepository.findById(id.get()).get();
                 userRepository.delete(user);
-                log.info("Пользователь: {} удален.", user);
+                log.info("Пользователь: {} удален.", user.getName());
                 return UserMapper.toUserDto(user);
             }
             throw new NoSuchElementException("Переменные пути указаны не верно! deleteUser()");
         }
 
-        public UserDto createUser(UserDto userDto) throws ValidationException, ConflictException {
+        public UserDto createUser(UserDto userDto) throws ValidationException {
             User user = UserMapper.toUser(userDto);
             if (validationUser(user)) {
                 userRepository.save(user);
@@ -70,13 +70,15 @@
                 return UserMapper.toUserDto(user);
         }
 
-        public boolean validationUser(User user) throws ValidationException, ConflictException {
+        public boolean validationUser(User user) throws ValidationException {
             if (user.getName() != null && user.getName() != "") {
                 for (char ch : user.getName().toCharArray()) {
                     if (ch == ' ') {
                         throw new ValidationException("Имя не может содержать символ пробела! validationUser()");
                     }
                 }
+            } else {
+                throw new ValidationException("Имя не указано! validationUser()");
             }
             return true;
         }

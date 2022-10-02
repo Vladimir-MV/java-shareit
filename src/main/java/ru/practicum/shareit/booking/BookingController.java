@@ -1,6 +1,7 @@
     package ru.practicum.shareit.booking;
 
     import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.boot.context.properties.bind.DefaultValue;
     import org.springframework.web.bind.annotation.*;
     import ru.practicum.shareit.booking.dto.BookingDtoById;
     import ru.practicum.shareit.booking.dto.BookingDtoIn;
@@ -10,6 +11,8 @@
 
     import javax.servlet.http.HttpServletRequest;
     import javax.validation.Valid;
+    import javax.validation.constraints.Positive;
+    import javax.validation.constraints.PositiveOrZero;
     import java.util.List;
     import java.util.Optional;
 
@@ -36,7 +39,7 @@
         }
         @PatchMapping("/{bookingId}")
         protected BookingDtoOut putStatus(@RequestHeader("X-Sharer-User-Id") Optional<Long> idUser,
-            @PathVariable Optional<Long> bookingId, @RequestParam("approved") Boolean approved)
+            @PathVariable Optional<Long> bookingId, @RequestParam(value="approved") Boolean approved)
             throws ValidationException {
             return bookingService.patchStatusBooking(idUser, bookingId, approved);
         }
@@ -48,10 +51,13 @@
         }
         @GetMapping()
         protected List<BookingDtoOut> findBooking(@RequestHeader("X-Sharer-User-Id") Optional<Long> userId,
+            @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") Optional<Integer> from,
+            @Positive @RequestParam(value = "size", defaultValue = "10") Optional<Integer> size,
             @RequestParam(value = "state", required = false, defaultValue = "ALL") String state)
             throws ValidationException, MessageFailedException {
-            return bookingService.findBookingsState(userId, state);
+            return bookingService.findBookingsState(userId, from, size, state);
         }
+
         @GetMapping("/")
         protected List<BookingDtoOut> findBooking(@RequestHeader("X-Sharer-User-Id") Optional<Long> userId)
             throws ValidationException {
@@ -59,8 +65,11 @@
         }
         @GetMapping("/owner")
         protected List<BookingDtoOut> findBookingOwner(@RequestHeader("X-Sharer-User-Id") Optional<Long> idUser,
+            @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") Optional<Integer> from,
+            @Positive @RequestParam(value = "size", defaultValue = "10") Optional<Integer> size,
             @RequestParam(value = "state", required = false, defaultValue = "ALL") String state)
             throws ValidationException, MessageFailedException {
-            return bookingService.findBookingsOwnerState(idUser, state);
+            return bookingService.findBookingsOwnerState(idUser, from, size, state);
         }
+
     }

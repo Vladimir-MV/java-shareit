@@ -1,6 +1,7 @@
     package ru.practicum.shareit.booking;
 
     import lombok.extern.slf4j.Slf4j;
+    import org.springframework.data.domain.Pageable;
     import org.springframework.stereotype.Service;
     import ru.practicum.shareit.booking.dto.*;
     import ru.practicum.shareit.booking.model.Booking;
@@ -10,14 +11,13 @@
     import ru.practicum.shareit.item.model.Item;
     import ru.practicum.shareit.user.UserRepository;
     import ru.practicum.shareit.user.model.User;
-
+    import javax.persistence.EntityManager;
+    import javax.persistence.PersistenceContext;
     import java.time.LocalDateTime;
-    import java.util.ArrayList;
     import java.util.List;
     import java.util.NoSuchElementException;
     import java.util.Optional;
 
-    import static ru.practicum.shareit.booking.State.*;
 
     @Slf4j
     @Service
@@ -26,6 +26,9 @@
         private BookingRepository bookingRepository;
         private ItemRepository itemRepository;
         private UserRepository userRepository;
+
+        @PersistenceContext
+        public EntityManager em;
 
         public BookingServiceImpl (BookingRepository bookingRepository, ItemRepository itemRepository,
                                    UserRepository userRepository) {
@@ -105,7 +108,6 @@
             List<Booking> list =  bookingRepository.findByBooker_IdOrderByStartDesc(user.getId());
             log.info("Вся бронь пользователя {} ", user.getName());
             return BookingMapper.toListBookingDto(list);
-
         }
         @Override
         public BookingDtoOut findBookingById(Optional<Long> idUser, Optional<Long> bookingId) throws ValidationException {
@@ -119,7 +121,7 @@
             throw new NoSuchElementException("Пользователю информация о бронировании не доступна, findBookingById");
         }
         @Override
-        public List<BookingDtoOut> findBookingsState(Optional<Long> idUser, String state)
+        public List<BookingDtoOut> findBookingsState(Optional<Long> idUser, Optional<Integer> from, Optional<Integer> size, String state)
                 throws ValidationException, MessageFailedException {
             try {
                 State.valueOf(state);
@@ -127,69 +129,97 @@
                 throw new MessageFailedException();
             }
             User user = validationUser(idUser);
+            final Pageable pageable = FromSizeRequest.of(from.get(), size.get());
                 switch (State.valueOf(state)) {
                     case ALL:
+                        List <Booking> listBooking = bookingRepository
+                                .findByBookingsListStateAll(idUser.get(), pageable).getContent();
                         log.info("Вся бронь пользователя {}, со статусом ALL", user.getName());
-                        return BookingMapper.toListBookingDto(bookingRepository.searchListBookingALL(user.getId()));
+                        return BookingMapper.toListBookingDto(listBooking);
                     case CURRENT:
+                        LocalDateTime time = LocalDateTime.now();
+                        listBooking = bookingRepository
+                                .findByBookingsListStateCurrent(idUser.get(), time, pageable).getContent();
                         log.info("Вся бронь пользователя {}, со статусом CURRENT", user.getName());
-                        return BookingMapper.toListBookingDto(
-                                bookingRepository.searchListBookingCurrent(user.getId(), LocalDateTime.now()));
+                        return BookingMapper.toListBookingDto(listBooking);
                     case PAST:
+                        time = LocalDateTime.now();
+                        listBooking = bookingRepository
+                                .findByBookingsListStatePast(idUser.get(), time, pageable).getContent();
                         log.info("Вся бронь пользователя {}, со статусом PAST", user.getName());
-                        return BookingMapper.toListBookingDto(
-                                bookingRepository.searchListBookingPast(user.getId(), LocalDateTime.now()));
+                        return BookingMapper.toListBookingDto(listBooking);
                     case FUTURE:
+                        time = LocalDateTime.now();
+                        listBooking = bookingRepository
+                                .findByBookingsListStateFuture(idUser.get(), time, pageable).getContent();
                         log.info("Вся бронь пользователя {}, со статусом FUTURE", user.getName());
-                        return BookingMapper.toListBookingDto(
-                                bookingRepository.searchListBookingFuture(user.getId(), LocalDateTime.now()));
+                        return BookingMapper.toListBookingDto(listBooking);
                     case WAITING:
+                        listBooking = bookingRepository
+                                .findByBookingsListStateWaiting(idUser.get(), pageable).getContent();
                         log.info("Вся бронь пользователя {}, со статусом WAITING", user.getName());
-                        return BookingMapper.toListBookingDto(
-                                bookingRepository.searchListBookingWaiting(user.getId()));
+                        return BookingMapper.toListBookingDto(listBooking);
                     case REJECTED:
+                        listBooking = bookingRepository
+                                .findByBookingsListStateRejected(idUser.get(), pageable).getContent();
                         log.info("Вся бронь пользователя {}, со статусом REJECTED", user.getName());
-                        return BookingMapper.toListBookingDto(
-                                bookingRepository.searchListBookingRejected(user.getId()));
+                        return BookingMapper.toListBookingDto(listBooking);
                     default:
                         throw new MessageFailedException();
                 }
         }
+
         @Override
-        public List<BookingDtoOut> findBookingsOwnerState (Optional<Long> idUser, String state) throws ValidationException, MessageFailedException {
+        public List<BookingDtoOut> findBookingsOwnerState (Optional<Long> idUser, Optional<Integer> from,
+            Optional<Integer> size, String state) throws ValidationException, MessageFailedException {
             try {
                 State.valueOf(state);
             } catch (IllegalArgumentException e) {
                 throw new MessageFailedException();
             }
             User user = validationUser(idUser);
-            if (itemRepository.findByOwner_IdOrderById(idUser.get()).isEmpty()) throw new ValidationException("У пользователя нет вещей! findBookingsOwnerState()");
+            if (itemRepository.findByOwner_IdOrderById(idUser.get()).isEmpty())
+                throw new ValidationException("У пользователя нет вещей! findBookingsOwnerState()");
+
+            System.out.println(from.get() + " " + size.get());
+            final Pageable pageable = FromSizeRequest.of(from.get(), size.get());
             switch (State.valueOf(state)) {
                 case ALL:
+                    List <Booking> listBooking = bookingRepository
+                            .findByBookingsOwnerListStateAll(idUser.get(), pageable).getContent();
                     log.info("Вся бронь собственника {}, со статусом ALL", user.getName());
-                    return BookingMapper.toListBookingDto(bookingRepository.searchListBookingALLOwner(idUser.get()));
+                    return BookingMapper.toListBookingDto(listBooking);
                 case CURRENT:
+                    LocalDateTime time = LocalDateTime.now();
+                    listBooking = bookingRepository
+                            .findByBookingsOwnerListStateCurrent(idUser.get(), time, pageable).getContent();
                     log.info("Вся бронь собственника {}, со статусом CURRENT", user.getName());
-                    return BookingMapper.toListBookingDto(
-                            bookingRepository.searchListBookingCurrentOwner(idUser.get(), LocalDateTime.now()));
+                    return BookingMapper.toListBookingDto(listBooking);
                 case PAST:
+                    time = LocalDateTime.now();
+                    listBooking = bookingRepository
+                            .findByBookingsOwnerListStatePast(idUser.get(), time, pageable).getContent();
                     log.info("Вся бронь собственника {}, со статусом PAST", user.getName());
-                    return BookingMapper.toListBookingDto(
-                            bookingRepository.searchListBookingPastOwner(idUser.get(), LocalDateTime.now()));
+                    return BookingMapper.toListBookingDto(listBooking);
                 case FUTURE:
+                    time = LocalDateTime.now();
+                    listBooking = bookingRepository
+                            .findByBookingsOwnerListStateFuture(idUser.get(), time, pageable).getContent();
                     log.info("Вся бронь собственника {}, со статусом FUTURE", user.getName());
-                    return BookingMapper.toListBookingDto(
-                            bookingRepository.searchListBookingFutureOwner(idUser.get(), LocalDateTime.now()));
+                    return BookingMapper.toListBookingDto(listBooking);
                 case WAITING:
+                    listBooking = bookingRepository
+                            .findByBookingsOwnerListStateWaiting(idUser.get(), pageable).getContent();
                     log.info("Вся бронь собственника {}, со статусом WAITING", user.getName());
-                    return BookingMapper.toListBookingDto(
-                            bookingRepository.searchListBookingWaitingOwner(idUser.get()));
+                    return BookingMapper.toListBookingDto(listBooking);
                 case REJECTED:
+                    listBooking = bookingRepository
+                            .findByBookingsOwnerListStateRejected(idUser.get(), pageable).getContent();
                     log.info("Вся бронь собственника {}, со статусом REJECTED", user.getName());
-                    return BookingMapper.toListBookingDto(
-                            bookingRepository.searchListBookingRejectedOwner(idUser.get()));
+                    return BookingMapper.toListBookingDto(listBooking);
                 default:
                     throw new MessageFailedException();
             }
         }
+
     }

@@ -8,6 +8,7 @@
     import ru.practicum.shareit.item.dto.ItemDtoLastNext;
     import javax.servlet.http.HttpServletRequest;
     import javax.validation.Valid;
+    import javax.validation.constraints.PositiveOrZero;
     import java.util.List;
     import java.util.Optional;
 
@@ -26,8 +27,10 @@
             return test;
         }
         @GetMapping()
-        protected List<ItemDtoLastNext> findAllItems(@RequestHeader("X-Sharer-User-Id") Optional<Long> idUser) throws ValidationException {
-            return itemService.findAllItemsOwner(idUser);
+        protected List<ItemDtoLastNext> findAllItems(@RequestHeader("X-Sharer-User-Id") Optional<Long> idUser,
+                @RequestParam(value = "from", required = false) Optional<Integer> from,
+                @RequestParam(value = "size", required = false) Optional<Integer> size) throws ValidationException {
+            return itemService.findAllItemsOwner(idUser, from, size);
         }
 
         @GetMapping("/{id}")
@@ -54,9 +57,12 @@
         }
 
         @GetMapping("/search")
-        protected List<ItemDto> findItemById(@RequestHeader("X-Sharer-User-Id") Optional<Long> idUser,
-            @RequestParam("text") String text) throws ValidationException {
-            return itemService.findItemSearch(idUser, text);
+        protected List<ItemDto> findItemByIdSearch(@RequestHeader("X-Sharer-User-Id") Optional<Long> idUser,
+            @RequestParam("text") String text,
+            @PositiveOrZero @RequestParam(value = "from", required = false) Optional<Integer> from,
+            @PositiveOrZero @RequestParam(value = "size", required = false) Optional<Integer> size
+        ) throws ValidationException {
+            return itemService.findItemSearch(idUser, text, from, size);
         }
 
         @PostMapping("/{itemId}/comment")

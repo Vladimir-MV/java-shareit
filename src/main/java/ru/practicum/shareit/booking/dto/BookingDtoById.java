@@ -12,9 +12,12 @@
         @AllArgsConstructor
         public class BookingDtoById {
 
-        public BookingDtoById(Long id) {
-            this.id = id;
-        }
+//        public BookingDtoById(Long id, Long bookerId, LocalDateTime start, LocalDateTime end) {
+//                this.id = id;
+//                this.bookerId = bookerId;
+//                this.start = start;
+//                this.end = end;
+//        }
         private Long id;
         private Long bookerId;
         private LocalDateTime start;
