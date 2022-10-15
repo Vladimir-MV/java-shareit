@@ -3,9 +3,7 @@
     import org.junit.jupiter.api.Test;
     import ru.practicum.shareit.booking.BookingRepository;
     import ru.practicum.shareit.booking.Status;
-    import ru.practicum.shareit.booking.dto.BookingDtoIn;
     import ru.practicum.shareit.booking.dto.BookingDto;
-    import ru.practicum.shareit.booking.dto.BookingDtoLastNextOut;
     import ru.practicum.shareit.booking.model.Booking;
     import ru.practicum.shareit.item.dto.CommentDto;
     import ru.practicum.shareit.item.dto.ItemDto;
@@ -48,8 +46,8 @@
         private User userNew;
         private UserDto userDto;
         private Booking booking;
-        private BookingDtoIn bookingDtoById;
-        private BookingDtoLastNextOut bookingDtoLastNextOut;
+        private BookingDto bookingDtoById;
+        private BookingDto bookingDtoLastNextOut;
         private BookingDto bookingDto;
         private List<Booking> list;
         private List<CommentDto> listCommentDto;
@@ -106,7 +104,7 @@
                     "description",
                     true,
                     bookingDtoLastNextOut,
-                    new BookingDtoLastNextOut(
+                    new BookingDto(
                             3L,
                             1L,
                             LocalDateTime.now(),

@@ -1,14 +1,13 @@
     package ru.practicum.shareit.booking;
 
     import ru.practicum.shareit.booking.dto.BookingDto;
-    import ru.practicum.shareit.booking.dto.BookingDtoIn;
     import ru.practicum.shareit.exception.MessageFailedException;
     import ru.practicum.shareit.exception.ValidationException;
     import java.util.List;
     import java.util.Optional;
 
     public interface BookingService {
-        BookingDto createBooking(Optional<Long> idUser, Optional<BookingDtoIn> bookingDto)
+        BookingDto createBooking(Optional<Long> idUser, Optional<BookingDto> bookingDto)
                 throws ValidationException;
 
         BookingDto patchStatusBooking(Optional<Long> idUser, Optional<Long> approved, Boolean bookingId) throws ValidationException;

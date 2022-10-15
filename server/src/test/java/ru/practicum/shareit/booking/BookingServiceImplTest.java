@@ -1,9 +1,7 @@
     package ru.practicum.shareit.booking;
 
     import org.junit.jupiter.api.Test;
-    import ru.practicum.shareit.booking.dto.BookingDtoIn;
     import ru.practicum.shareit.booking.dto.BookingDto;
-    import ru.practicum.shareit.booking.dto.BookingDtoLastNextOut;
     import ru.practicum.shareit.booking.model.Booking;
     import ru.practicum.shareit.item.ItemRepository;
     import ru.practicum.shareit.item.dto.CommentDto;
@@ -39,13 +37,12 @@
         private User userNew;
         private UserDto userDto;
         private Booking booking;
-        private BookingDtoIn bookingDtoById;
         private BookingDto bookingDto;
+        private BookingDto bookingDtoIn;
         private List<Booking> list;
         private List<ItemDto> listItem;
-        private BookingDtoIn bookingDtoIn;
         private List<BookingDto> bookingList;
-        private BookingDtoLastNextOut bookingDtoLastNextOut;
+        private BookingDto bookingDtoLastNextOut;
         private ItemRequest itemRequest;
         String state;
         Integer from;
@@ -105,7 +102,7 @@
 //                            userDto,
 //                            LocalDateTime.of(2022, 4, 4, 4, 4, 4),
 //                            listItem));
-            bookingDtoLastNextOut = new BookingDtoLastNextOut(
+            bookingDtoLastNextOut = new BookingDto(
                     3L,
                     1L,
                     LocalDateTime.now(),
@@ -117,7 +114,7 @@
                     "description",
                     true,
                     bookingDtoLastNextOut,
-                    new BookingDtoLastNextOut(
+                    new BookingDto(
                             3L,
                             1L,
                             LocalDateTime.now(),
@@ -143,7 +140,7 @@
                     Status.REJECTED,
                     userDto,
                     itemDto);
-            bookingDtoIn = new BookingDtoIn(
+            bookingDtoIn = new BookingDto(
                     1L,
                     LocalDateTime.of(2022, 10, 20, 10, 10, 10),
                     LocalDateTime.of(2022, 11, 11, 11, 11, 11));
@@ -168,7 +165,7 @@
                     .when(userRepository.findById(1L)).thenReturn(Optional.of(user));
             Mockito
                     .when(itemRepository.findById(1L)).thenReturn(Optional.of(item));
-            BookingDto bookingDtoOutTest = bookingService.createBooking (Optional.of(1L), Optional.of(bookingDtoIn));
+            BookingDto bookingDtoOutTest = bookingService.createBooking (Optional.of(1L), Optional.of(bookingDto));
             Assertions.assertEquals(1L, bookingDtoOutTest.getBooker().getId());
             Assertions.assertEquals("2022-10-20T10:10:10", bookingDtoOutTest.getStart().toString());
             Assertions.assertEquals("2022-11-11T11:11:11", bookingDtoOutTest.getEnd().toString());
@@ -221,7 +218,7 @@
                             userNew,
                             itemRequest)));
             Assertions.assertThrows(ValidationException.class, () -> bookingService.createBooking (Optional.of(1L),
-                    Optional.of(new BookingDtoIn(
+                    Optional.of(new BookingDto(
                             2L,
                             LocalDateTime.of(2022, 10, 20, 10, 10, 10),
                             LocalDateTime.of(2022, 11, 11, 11, 11, 11)))));
@@ -235,7 +232,7 @@
             Mockito
                     .when(itemRepository.findById(1L)).thenReturn(Optional.of(item));
             Assertions.assertThrows(ValidationException.class, () -> bookingService.createBooking (Optional.of(1L),
-                    Optional.of(new BookingDtoIn(
+                    Optional.of(new BookingDto(
                             1L,
                             LocalDateTime.of(2022, 10, 20, 10, 10, 10),
                             LocalDateTime.of(2022, 9, 11, 11, 11, 11)))));
@@ -250,7 +247,7 @@
                     .when(itemRepository.findById(1L)).thenReturn(Optional.of(item));
             LocalDateTime timeToday = LocalDateTime.now();
             Assertions.assertThrows(ValidationException.class, () -> bookingService.createBooking (Optional.of(1L),
-                    Optional.of(new BookingDtoIn(
+                    Optional.of(new BookingDto(
                             1L,
                             LocalDateTime.of(2022, 10, 20, 10, 10, 10),
                             timeToday.minusMonths(1)))));
@@ -265,7 +262,7 @@
                     .when(itemRepository.findById(1L)).thenReturn(Optional.of(item));
             LocalDateTime timeToday = LocalDateTime.now();
             Assertions.assertThrows(ValidationException.class, () -> bookingService.createBooking (Optional.of(1L),
-                    Optional.of(new BookingDtoIn(
+                    Optional.of(new BookingDto(
                             1L,
                             timeToday.minusMonths(1),
                             LocalDateTime.of(2022, 9, 11, 11, 11, 11)))));

@@ -4,7 +4,7 @@
     import lombok.Getter;
     import lombok.NoArgsConstructor;
     import lombok.Setter;
-    import ru.practicum.shareit.booking.dto.BookingDtoLastNextOut;
+    import ru.practicum.shareit.booking.dto.BookingDto;
     import ru.practicum.shareit.requests.dto.ItemRequestDto;
 
     import java.util.List;
@@ -26,8 +26,8 @@
         private String name;
         private String description;
         private Boolean available;
-        private BookingDtoLastNextOut lastBooking;
-        private BookingDtoLastNextOut nextBooking;
+        private BookingDto lastBooking;
+        private BookingDto nextBooking;
         private List<CommentDto> comments;
         private ItemRequestDto request;
 

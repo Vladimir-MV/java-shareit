@@ -9,7 +9,6 @@
     import org.springframework.boot.test.context.SpringBootTest;
     import org.springframework.test.annotation.DirtiesContext;
     import ru.practicum.shareit.booking.dto.BookingDto;
-    import ru.practicum.shareit.booking.dto.BookingDtoIn;
     import ru.practicum.shareit.exception.MessageFailedException;
     import ru.practicum.shareit.item.ItemRepository;
     import ru.practicum.shareit.item.dto.ItemDto;
@@ -74,7 +73,7 @@
                 userDto,
                 1L);
 
-        private BookingDtoIn bookingDtoIn = new BookingDtoIn(
+        private BookingDto bookingDtoIn = new BookingDto(
                 1L,
                 LocalDateTime.of(2022, 10, 20, 10, 10, 10),
                 LocalDateTime.of(2022, 11, 11, 11, 11, 11));

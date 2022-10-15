@@ -8,7 +8,6 @@
     import org.springframework.stereotype.Service;
     import org.springframework.web.util.DefaultUriBuilderFactory;
     import ru.practicum.shareit.booking.dto.BookingDto;
-    import ru.practicum.shareit.booking.dto.BookingDtoIn;
     import ru.practicum.shareit.client.BaseClient;
     import java.util.Map;
 
@@ -44,7 +43,7 @@
         }
 
 
-        public ResponseEntity<Object> createBookingGateway (long userId, BookingDtoIn bookingDto) {
+        public ResponseEntity<Object> createBookingGateway (long userId, BookingDto bookingDto) {
             return post("", userId, bookingDto);
         }
 

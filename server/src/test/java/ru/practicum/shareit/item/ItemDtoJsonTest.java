@@ -2,8 +2,7 @@
 
     import org.junit.jupiter.api.BeforeEach;
     import org.junit.jupiter.api.Test;
-    import ru.practicum.shareit.booking.dto.BookingDtoIn;
-    import ru.practicum.shareit.booking.dto.BookingDtoLastNextOut;
+    import ru.practicum.shareit.booking.dto.BookingDto;
     import ru.practicum.shareit.item.dto.CommentDto;
     import ru.practicum.shareit.item.dto.ItemDto;
     import ru.practicum.shareit.item.dto.ItemDtoLastNext;
@@ -40,8 +39,8 @@
                     "John",
                     "description",
                     true,
-                    new BookingDtoLastNextOut(),
-                    new BookingDtoLastNextOut(),
+                    new BookingDto(),
+                    new BookingDto(),
                     List.of(commentDto),
                     new ItemRequestDto());
         }

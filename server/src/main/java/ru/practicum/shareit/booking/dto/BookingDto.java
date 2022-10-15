@@ -14,11 +14,39 @@
     @AllArgsConstructor
     public class BookingDto {
 
-        private Long Id;
+        public BookingDto(Long id, LocalDateTime start, LocalDateTime end)
+        {
+            this.id = id;
+            this.start = start;
+            this.end = end;
+
+        }
+        public BookingDto(Long id, Long bookerId, LocalDateTime start, LocalDateTime end)
+        {
+            this.id = id;
+            this.bookerId = bookerId;
+            this.start = start;
+            this.end = end;
+
+        }
+        public BookingDto(Long id, LocalDateTime start, LocalDateTime end, Status status, UserDto booker, ItemDto item)
+        {
+            this.id = id;
+            this.start = start;
+            this.end = end;
+            this.status = status;
+            this.booker = booker;
+            this.item = item;
+        }
+
+        private Long id;
+        private Long itemId;
+        private Long bookerId;
         private LocalDateTime start;
         private LocalDateTime end;
         private Status status;
         private UserDto booker;
         private ItemDto item;
+
 
     }

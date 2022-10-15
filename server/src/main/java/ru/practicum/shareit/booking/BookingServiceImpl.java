@@ -4,7 +4,6 @@
     import org.springframework.data.domain.Pageable;
     import org.springframework.stereotype.Service;
     import ru.practicum.shareit.booking.dto.BookingDto;
-    import ru.practicum.shareit.booking.dto.BookingDtoIn;
     import ru.practicum.shareit.booking.dto.BookingMapper;
     import ru.practicum.shareit.booking.model.Booking;
     import ru.practicum.shareit.exception.MessageFailedException;
@@ -39,8 +38,7 @@
             this.userRepository = userRepository;
         }
         @Override
-        public BookingDto createBooking (Optional<Long> idUser, Optional<BookingDtoIn> bookingDtoIn) throws ValidationException {
-            System.out.println("createBooking в server , создать Booking userId" + idUser.get() + "itemId " + bookingDtoIn.get().getItemId());
+        public BookingDto createBooking (Optional<Long> idUser, Optional<BookingDto> bookingDtoIn) throws ValidationException {
             User user = validationUser(idUser);
             Item item = validationItem(bookingDtoIn);
             if (user.getId().equals(item.getOwner().getId()))
@@ -70,7 +68,7 @@
             throw new NoSuchElementException("Указанный пользователь не найден! validationUser()");
         return user.get();
     }
-        public Item validationItem (Optional<BookingDtoIn> bookingDtoIn) throws ValidationException {
+        public Item validationItem (Optional<BookingDto> bookingDtoIn) throws ValidationException {
             Optional<Item> item = itemRepository.findById(bookingDtoIn.get().getItemId());
             if (!item.isPresent()) throw new NoSuchElementException("Такой вещи нет! validationItem()");
             return item.get();
@@ -126,11 +124,6 @@
         @Override
         public List<BookingDto> findBookingsState(Optional<Long> idUser, Optional<Integer> from, Optional<Integer> size, String state)
                 throws ValidationException, MessageFailedException {
-            try {
-                State.valueOf(state);
-            } catch (IllegalArgumentException e) {
-                throw new MessageFailedException();
-            }
             User user = validationUser(idUser);
             final Pageable pageable = FromSizeRequest.of(from.get(), size.get());
                 switch (State.valueOf(state)) {
@@ -177,11 +170,6 @@
         @Override
         public List<BookingDto> findBookingsOwnerState (Optional<Long> idUser, Optional<Integer> from,
             Optional<Integer> size, String state) throws ValidationException, MessageFailedException {
-            try {
-                State.valueOf(state);
-            } catch (IllegalArgumentException e) {
-                throw new MessageFailedException();
-            }
             User user = validationUser(idUser);
             if (itemRepository.findByOwner_IdOrderById(idUser.get()).isEmpty())
                 throw new ValidationException("У пользователя нет вещей! findBookingsOwnerState()");

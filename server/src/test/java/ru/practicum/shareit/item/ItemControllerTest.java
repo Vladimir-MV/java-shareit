@@ -10,8 +10,7 @@
     import org.springframework.boot.test.mock.mockito.MockBean;
     import org.springframework.http.MediaType;
     import org.springframework.test.web.servlet.MockMvc;
-    import ru.practicum.shareit.booking.dto.BookingDtoIn;
-    import ru.practicum.shareit.booking.dto.BookingDtoLastNextOut;
+    import ru.practicum.shareit.booking.dto.BookingDto;
     import ru.practicum.shareit.item.dto.CommentDto;
     import ru.practicum.shareit.item.dto.ItemDto;
     import ru.practicum.shareit.item.dto.ItemDtoLastNext;
@@ -72,8 +71,8 @@
                    "john",
                    "description",
                    true,
-                   new BookingDtoLastNextOut(1L, 2L, LocalDateTime.now(), LocalDateTime.now().plusMonths(2)),
-                   new BookingDtoLastNextOut(3L, 4L, LocalDateTime.now(), LocalDateTime.now().plusMonths(3)),
+                   new BookingDto(1L, 2L, LocalDateTime.now(), LocalDateTime.now().plusMonths(2)),
+                   new BookingDto(3L, 4L, LocalDateTime.now(), LocalDateTime.now().plusMonths(3)),
                    Arrays.asList(new CommentDto()),
                    new ItemRequestDto(1L, "description", userDto, LocalDateTime.now(), list));
            list = Arrays.asList(itemDto);

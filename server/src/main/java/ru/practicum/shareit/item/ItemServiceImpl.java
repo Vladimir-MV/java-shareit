@@ -65,11 +65,11 @@
                 Optional<List<Booking>> listBooking = bookingRepository.findByItem_Id(item.getId());
                 if ((listBooking.get().size() - 1) >= 0) {
                     itemDtoLastNext.setNextBooking(
-                            BookingMapper.toBookingDtoLastNextOut(listBooking.get().get(listBooking.get().size() - 1)));
+                            BookingMapper.toBookingDtoLastNext(listBooking.get().get(listBooking.get().size() - 1)));
                 }
                 if ((listBooking.get().size() - 2) >= 0) {
                     itemDtoLastNext.setLastBooking(
-                            BookingMapper.toBookingDtoLastNextOut(listBooking.get().get(listBooking.get().size() - 2)));
+                            BookingMapper.toBookingDtoLastNext(listBooking.get().get(listBooking.get().size() - 2)));
                 }
            itemDtoLastNext.setComments(ItemMapper.toListItemDtoLastNext((commentRepository.findByItem_Id(item.getId()))));
            return itemDtoLastNext;

@@ -11,7 +11,6 @@
     import org.springframework.http.MediaType;
     import org.springframework.test.web.servlet.MockMvc;
     import ru.practicum.shareit.booking.dto.BookingDto;
-    import ru.practicum.shareit.booking.dto.BookingDtoLastNextOut;
     import ru.practicum.shareit.item.dto.CommentDto;
     import ru.practicum.shareit.item.dto.ItemDto;
     import ru.practicum.shareit.item.dto.ItemDtoLastNext;
@@ -41,7 +40,7 @@
         private CommentDto commentDto;
         private ItemDtoLastNext itemDtoLastNext;
         private UserDto userDto;
-        private BookingDtoLastNextOut bookingDtoLastNextOut;
+        private BookingDto bookingDtoLastNextOut;
         BookingDto bookingDto2;
         BookingDto bookingDto;
         Boolean approved;
@@ -72,7 +71,7 @@
                     itemDto,
                     "john",
                     LocalDateTime.now());
-            bookingDtoLastNextOut = new BookingDtoLastNextOut(
+            bookingDtoLastNextOut = new BookingDto(
                     3L,
                     1L,
                     LocalDateTime.now(),
@@ -84,7 +83,7 @@
                     "description",
                     true,
                     bookingDtoLastNextOut,
-                    new BookingDtoLastNextOut(
+                    new BookingDto(
                             3L,
                             1L,
                             LocalDateTime.now(),

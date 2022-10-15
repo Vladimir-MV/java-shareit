@@ -6,7 +6,7 @@
     import org.springframework.http.ResponseEntity;
     import org.springframework.stereotype.Controller;
     import org.springframework.web.bind.annotation.*;
-    import ru.practicum.shareit.booking.dto.BookingDtoIn;
+    import ru.practicum.shareit.booking.dto.BookingDto;
     import ru.practicum.shareit.exception.MessageFailedException;
     import javax.validation.Valid;
     import javax.validation.constraints.Positive;
@@ -36,7 +36,7 @@
 
         @PostMapping
         public ResponseEntity<Object> createBookingGateway (@Valid @RequestHeader("X-Sharer-User-Id") long userId,
-             @RequestBody BookingDtoIn bookingDto) {
+             @RequestBody BookingDto bookingDto) {
             log.info("create booking {}, userId={}", bookingDto, userId);
             return bookingClient.createBookingGateway(userId, bookingDto);
         }

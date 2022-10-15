@@ -11,9 +11,7 @@
     import org.springframework.test.annotation.Rollback;
     import ru.practicum.shareit.booking.BookingRepository;
     import ru.practicum.shareit.booking.Status;
-    import ru.practicum.shareit.booking.dto.BookingDtoIn;
     import ru.practicum.shareit.booking.dto.BookingDto;
-    import ru.practicum.shareit.booking.dto.BookingDtoLastNextOut;
     import ru.practicum.shareit.booking.model.Booking;
     import ru.practicum.shareit.exception.ValidationException;
     import ru.practicum.shareit.item.dto.CommentDto;
@@ -105,17 +103,17 @@
                     item,
                     userNew,
                     Status.REJECTED);
-            private BookingDtoIn bookingDtoById = new BookingDtoIn(
+            private BookingDto bookingDtoById = new BookingDto(
                     1L,
                     LocalDateTime.of(2022, 10, 20, 10, 10, 10),
                     LocalDateTime.of(2022, 11, 11, 11, 11, 11));
-            private BookingDtoLastNextOut bookingDtoLastNextOut = new BookingDtoLastNextOut(
+            private BookingDto bookingDtoLastNextOut = new BookingDto(
                     1L,
                     1L,
                     LocalDateTime.of(2022, 10, 20, 10, 10, 10),
                     LocalDateTime.of(2022, 11, 11, 11, 11, 11));
 
-            private BookingDtoIn bookingDto = new BookingDtoIn(
+            private BookingDto bookingDto = new BookingDto(
                     1L,
                     LocalDateTime.of(2022, 10, 20, 10, 10, 10),
                     LocalDateTime.of(2022, 11, 11, 11, 11, 11));
@@ -131,7 +129,7 @@
                     "description",
                     true,
                     bookingDtoLastNextOut,
-                    new BookingDtoLastNextOut(
+                    new BookingDto(
                             1L,
                             1L,
                             LocalDateTime.of(2022, 10, 20, 10, 10, 10),

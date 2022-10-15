@@ -5,8 +5,6 @@
     import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
     import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
     import org.springframework.test.annotation.DirtiesContext;
-    import ru.practicum.shareit.booking.BookingRepository;
-    import ru.practicum.shareit.booking.Status;
     import ru.practicum.shareit.booking.model.Booking;
     import ru.practicum.shareit.item.ItemRepository;
     import ru.practicum.shareit.item.model.Item;
