@@ -18,10 +18,6 @@
     @AllArgsConstructor
 
     public class Booking {
-//        public  Booking(LocalDateTime start, LocalDateTime end) {
-//            this.start = start;
-//            this.end = end;
-//        }
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
