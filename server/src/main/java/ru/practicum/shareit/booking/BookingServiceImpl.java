@@ -38,7 +38,8 @@
             this.userRepository = userRepository;
         }
         @Override
-        public BookingDto createBooking (Optional<Long> idUser, Optional<BookingDto> bookingDtoIn) throws ValidationException {
+        public BookingDto createBooking (Optional<Long> idUser, Optional<BookingDto> bookingDtoIn)
+                throws ValidationException, NoSuchElementException {
             User user = validationUser(idUser);
             Item item = validationItem(bookingDtoIn);
             if (user.getId().equals(item.getOwner().getId()))
@@ -61,19 +62,19 @@
             return BookingMapper.toBookingDto(booking);
         }
 
-    public User validationUser (Optional<Long> idUser) {
+    public User validationUser (Optional<Long> idUser) throws NoSuchElementException {
         if (!idUser.isPresent()) throw new NoSuchElementException("Отсутствует id владельца! validationUser()");
         Optional<User> user = userRepository.findById(idUser.get());
         if (!user.isPresent())
             throw new NoSuchElementException("Указанный пользователь не найден! validationUser()");
         return user.get();
     }
-        public Item validationItem (Optional<BookingDto> bookingDtoIn) throws ValidationException {
+        public Item validationItem (Optional<BookingDto> bookingDtoIn) throws NoSuchElementException {
             Optional<Item> item = itemRepository.findById(bookingDtoIn.get().getItemId());
             if (!item.isPresent()) throw new NoSuchElementException("Такой вещи нет! validationItem()");
             return item.get();
         }
-    public Booking validBooking (Optional<Long> bookingId) throws ValidationException {
+    public Booking validBooking (Optional<Long> bookingId) throws ValidationException, NoSuchElementException {
         if (!bookingId.isPresent()) throw new ValidationException("Отсутствует id вещи! validationBooking()");
         Optional<Booking> booking = bookingRepository.findById(bookingId.get());
         if (!booking.isPresent())
@@ -104,14 +105,15 @@
             return BookingMapper.toBookingDto(booking);
         }
         @Override
-        public List<BookingDto> findBookingsAllById(Optional<Long> idUser) throws ValidationException {
+        public List<BookingDto> findBookingsAllById(Optional<Long> idUser) {
             User user = validationUser(idUser);
             List<Booking> list =  bookingRepository.findByBooker_IdOrderByStartDesc(user.getId());
             log.info("Вся бронь пользователя {} ", user.getName());
             return BookingMapper.toListBookingDto(list);
         }
         @Override
-        public BookingDto findBookingById(Optional<Long> idUser, Optional<Long> bookingId) throws ValidationException {
+        public BookingDto findBookingById(Optional<Long> idUser, Optional<Long> bookingId)
+                throws ValidationException, NoSuchElementException {
             User user = validationUser(idUser);
             Booking booking = validBooking(bookingId);
             if (booking.getBooker().getId().equals(user.getId()) ||

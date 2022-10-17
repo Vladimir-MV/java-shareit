@@ -14,24 +14,10 @@
     @AllArgsConstructor
     public class BookingDto {
 
-        public BookingDto(Long id, LocalDateTime start, LocalDateTime end)
-        {
-            this.id = id;
-            this.start = start;
-            this.end = end;
-
-        }
-        public BookingDto(Long id, Long bookerId, LocalDateTime start, LocalDateTime end)
+        public BookingDto(Long id, Long bookerId, LocalDateTime start, LocalDateTime end, Status status, UserDto booker, ItemDto item)
         {
             this.id = id;
             this.bookerId = bookerId;
-            this.start = start;
-            this.end = end;
-
-        }
-        public BookingDto(Long id, LocalDateTime start, LocalDateTime end, Status status, UserDto booker, ItemDto item)
-        {
-            this.id = id;
             this.start = start;
             this.end = end;
             this.status = status;

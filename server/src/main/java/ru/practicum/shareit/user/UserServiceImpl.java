@@ -3,7 +3,6 @@
     import lombok.extern.slf4j.Slf4j;
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.stereotype.Service;
-    import ru.practicum.shareit.exception.ConflictException;
     import ru.practicum.shareit.exception.ValidationException;
     import ru.practicum.shareit.user.dto.UserDto;
     import ru.practicum.shareit.user.dto.UserMapper;
@@ -56,7 +55,7 @@
             throw new ValidationException("Пользователь на создан! createUser()");
         }
 
-        public UserDto patchUser(UserDto userDto, Optional<Long> id) throws ValidationException, ConflictException {
+        public UserDto patchUser(UserDto userDto, Optional<Long> id) throws NoSuchElementException {
             User user = UserMapper.toUser(userDto);
             if (!id.isPresent())
                 throw new NoSuchElementException("Отсутствует id пользователя! patchUser()");

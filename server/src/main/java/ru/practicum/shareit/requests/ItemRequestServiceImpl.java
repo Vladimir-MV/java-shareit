@@ -47,7 +47,7 @@
             log.info("Создан запрос id: {}", itemRequest.getId());
             return ItemRequestMapper.toItemRequestDto(itemRequest);
         }
-        public User validationUser (Optional<Long> idUser) {
+        public User validationUser (Optional<Long> idUser) throws NoSuchElementException{
             if (!idUser.isPresent()) throw new NoSuchElementException("Отсутствует id владельца! validationUser()");
             Optional<User> user = userRepository.findById(idUser.get());
             if (!user.isPresent())
@@ -66,7 +66,7 @@
             return list;
         }
 
-        public ItemRequestDto findItemRequestById (Optional<Long> idUser, Optional<Long> id) {
+        public ItemRequestDto findItemRequestById (Optional<Long> idUser, Optional<Long> id) throws NoSuchElementException {
             validationUser(idUser);
             if (!id.isPresent())
                 throw new NoSuchElementException("Не правильно задан id запроса вещи! findItemRequestById()");

@@ -65,11 +65,11 @@
                 Optional<List<Booking>> listBooking = bookingRepository.findByItem_Id(item.getId());
                 if ((listBooking.get().size() - 1) >= 0) {
                     itemDtoLastNext.setNextBooking(
-                            BookingMapper.toBookingDtoLastNext(listBooking.get().get(listBooking.get().size() - 1)));
+                            BookingMapper.toBookingDto(listBooking.get().get(listBooking.get().size() - 1)));
                 }
                 if ((listBooking.get().size() - 2) >= 0) {
                     itemDtoLastNext.setLastBooking(
-                            BookingMapper.toBookingDtoLastNext(listBooking.get().get(listBooking.get().size() - 2)));
+                            BookingMapper.toBookingDto(listBooking.get().get(listBooking.get().size() - 2)));
                 }
            itemDtoLastNext.setComments(ItemMapper.toListItemDtoLastNext((commentRepository.findByItem_Id(item.getId()))));
            return itemDtoLastNext;
@@ -77,7 +77,8 @@
         }
 
         @Override
-        public List<ItemDtoLastNext> findAllItemsOwner (Optional<Long> idUser, Optional<Integer> from, Optional<Integer> size) throws ValidationException {
+        public List<ItemDtoLastNext> findAllItemsOwner (Optional<Long> idUser, Optional<Integer> from, Optional<Integer> size)
+                throws ValidationException {
             validationUser(idUser);
             final Pageable pageable = FromSizeRequest.of(from.get(), size.get());
             List<Item> listItem = itemRepository.findAllItemsOwner(idUser.get(), pageable).getContent();
@@ -91,7 +92,8 @@
         }
 
         @Override
-        public ItemDtoLastNext findItemById (Optional<Long> idUser, Optional<Long> id) throws ValidationException {
+        public ItemDtoLastNext findItemById (Optional<Long> idUser, Optional<Long> id)
+                throws ValidationException, NoSuchElementException {
             validationUser(idUser);
             if (!id.isPresent())
                 throw new NoSuchElementException("Не правильно задан id вещи! findItemById()");
@@ -107,7 +109,8 @@
             return itemDto;
     }
         @Override
-        public ItemDto patchItem (Optional<Long> idUser, ItemDto itemDto, Optional<Long> id) throws ValidationException {
+        public ItemDto patchItem (Optional<Long> idUser, ItemDto itemDto, Optional<Long> id)
+                throws ValidationException, NoSuchElementException {
             Item item = ItemMapper.toItem(itemDto);
             if (!id.isPresent())
                 throw new NoSuchElementException("Отсутствует id вещи! patchItem()");
@@ -124,7 +127,8 @@
             return ItemMapper.toItemDto(itemSt);
         }
         @Override
-        public ItemDto deleteItem(Optional<Long> idUser, Optional<Long> id) throws ValidationException {
+        public ItemDto deleteItem(Optional<Long> idUser, Optional<Long> id)
+                throws ValidationException, NoSuchElementException {
             validationUser(idUser);
             if (id.isPresent()) {
                 Item item = itemRepository.findById(id.get()).get();
@@ -137,7 +141,8 @@
             throw new NoSuchElementException("Id вещи не указан! deleteItemService()");
         }
         @Override
-        public List<ItemDto> findItemSearch (Optional<Long> idUser, String text, Optional<Integer> from, Optional<Integer> size) throws ValidationException {
+        public List<ItemDto> findItemSearch (Optional<Long> idUser, String text, Optional<Integer> from, Optional<Integer> size)
+                throws ValidationException {
             validationUser(idUser);
             if (text == null || text.length() == 0) return Collections.emptyList();
             final Pageable pageable = PageRequest.of(from.get(), size.get());
@@ -146,14 +151,14 @@
         log.info("По заданным парамеррам найдены вещи! findItemSearch ()");
         return ItemMapper.toListItemDto(listItem);
         }
-        public Optional<User> validationUser (Optional<Long> idUser) throws ValidationException {
+        public Optional<User> validationUser (Optional<Long> idUser) throws ValidationException, NoSuchElementException {
             if (!idUser.isPresent()) throw new ValidationException("Отсутствует id владельца! validationUser()");
             Optional<User> user = userRepository.findById(idUser.get());
             if (!user.isPresent())
                 throw new NoSuchElementException("Указанный идентификатор пользователя не найден! validationUser()");
             return user;
         }
-        public Optional<Item> validationItem (Optional<Long> itemId) throws ValidationException {
+        public Optional<Item> validationItem (Optional<Long> itemId) throws ValidationException, NoSuchElementException {
             if (!itemId.isPresent()) throw new ValidationException("Отсутствует id вещи! validationComment()");
             Optional<Item> item = itemRepository.findById(itemId.get());
             if (!item.isPresent())

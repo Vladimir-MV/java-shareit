@@ -10,6 +10,7 @@
         public static BookingDto toBookingDto(Booking booking) {
             return new BookingDto(
                     booking.getId(),
+                    booking.getBooker().getId(),
                     booking.getStart(),
                     booking.getEnd(),
                     booking.getStatus(),
@@ -17,14 +18,14 @@
                     ItemMapper.toItemDto(booking.getItem())
             );
         }
-        public static BookingDto toBookingDtoLastNext(Booking booking) {
-            return new BookingDto(
-                    booking.getId(),
-                    booking.getBooker().getId(),
-                    booking.getStart(),
-                    booking.getEnd()
-            );
-        }
+//        public static BookingDto toBookingDtoLastNext(Booking booking) {
+//            return new BookingDto(
+//                    booking.getId(),
+//                    booking.getBooker().getId(),
+//                    booking.getStart(),
+//                    booking.getEnd()
+//            );
+//        }
 
 
         public static Booking toBookingDtoIn(BookingDto bookingDto) {
