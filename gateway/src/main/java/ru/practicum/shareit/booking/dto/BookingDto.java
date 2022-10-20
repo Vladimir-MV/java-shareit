@@ -7,7 +7,7 @@
     import ru.practicum.shareit.booking.model.Status;
     import ru.practicum.shareit.item.dto.ItemDto;
     import ru.practicum.shareit.user.dto.UserDto;
-    import javax.validation.constraints.NotBlank;
+    import javax.validation.constraints.NotNull;
     import java.time.LocalDateTime;
 
     @Getter
@@ -17,11 +17,11 @@
     public class BookingDto {
 
         private Long id;
-        @NotBlank
+        @NotNull
         private Long itemId;
-        @NotBlank
+        @NotNull
         private LocalDateTime start;
-        @NotBlank
+        @NotNull
         private LocalDateTime end;
         private Long bookerId;
         private Status status;
