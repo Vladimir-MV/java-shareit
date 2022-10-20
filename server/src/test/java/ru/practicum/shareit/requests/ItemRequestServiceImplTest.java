@@ -71,7 +71,7 @@
                     1L);
             booking = new Booking(
                     1L,
-                    LocalDateTime.of(2022, 10, 10, 10, 10, 10),
+                    LocalDateTime.of(2022, 10, 30, 10, 10, 10),
                     LocalDateTime.of(2022, 11, 11, 11, 11, 11),
                     item,
                     userNew,

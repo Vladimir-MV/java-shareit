@@ -145,7 +145,7 @@
                     new BookingDto(
                             1L,
                             1L,
-                            LocalDateTime.of(2022, 10, 20, 10, 10, 10),
+                            LocalDateTime.of(2022, 10, 30, 10, 10, 10),
                             LocalDateTime.of(2022, 11, 11, 11, 11, 11),
                             WAITING,
                             userDto,

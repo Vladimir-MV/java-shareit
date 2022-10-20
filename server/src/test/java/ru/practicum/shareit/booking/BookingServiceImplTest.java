@@ -8,7 +8,6 @@
     import ru.practicum.shareit.item.dto.ItemDto;
     import ru.practicum.shareit.item.dto.ItemDtoLastNext;
     import ru.practicum.shareit.item.model.Item;
-    import ru.practicum.shareit.requests.dto.ItemRequestDto;
     import ru.practicum.shareit.requests.model.ItemRequest;
     import ru.practicum.shareit.user.UserRepository;
     import org.junit.jupiter.api.Assertions;
@@ -22,7 +21,6 @@
     import java.time.LocalDateTime;
     import java.util.*;
 
-    import static ru.practicum.shareit.booking.Status.WAITING;
 
     @ExtendWith(MockitoExtension.class)
     class BookingServiceImplTest {
@@ -90,7 +88,7 @@
                     LocalDateTime.now());
             booking = new Booking(
                     1L,
-                    LocalDateTime.of(2022, 10, 20, 10, 10, 10),
+                    LocalDateTime.of(2022, 10, 30, 10, 10, 10),
                     LocalDateTime.of(2022, 11, 11, 11, 11, 11),
                     item,
                     user,
@@ -99,7 +97,7 @@
                     null,
                     1L,
                     null,
-                    LocalDateTime.of(2022, 10, 20, 10, 10, 10),
+                    LocalDateTime.of(2022, 10, 30, 10, 10, 10),
                     LocalDateTime.of(2022, 11, 11, 11, 11, 11),
                     null,
                     null,
@@ -127,7 +125,7 @@
                     .when(itemRepository.findById(1L)).thenReturn(Optional.of(item));
             BookingDto bookingDtoOutTest = bookingService.createBooking (Optional.of(1L), Optional.of(bookingDto));
             Assertions.assertEquals(1L, bookingDtoOutTest.getBooker().getId());
-            Assertions.assertEquals("2022-10-20T10:10:10", bookingDtoOutTest.getStart().toString());
+            Assertions.assertEquals("2022-10-30T10:10:10", bookingDtoOutTest.getStart().toString());
             Assertions.assertEquals("2022-11-11T11:11:11", bookingDtoOutTest.getEnd().toString());
         }
         @Test
@@ -182,7 +180,7 @@
                             null,
                             2L,
                             null,
-                            LocalDateTime.of(2022, 10, 20, 10, 10, 10),
+                            LocalDateTime.of(2022, 10, 30, 10, 10, 10),
                             LocalDateTime.of(2022, 11, 11, 11, 11, 11),
                             null,
                             null,
@@ -201,7 +199,7 @@
                             null,
                             1L,
                             null,
-                            LocalDateTime.of(2022, 10, 20, 10, 10, 10),
+                            LocalDateTime.of(2022, 10, 30, 10, 10, 10),
                             LocalDateTime.of(2022, 9, 11, 11, 11, 11),
                             null,
                             null,
@@ -221,7 +219,7 @@
                             null,
                             1L,
                             null,
-                            LocalDateTime.of(2022, 10, 20, 10, 10, 10),
+                            LocalDateTime.of(2022, 10, 30, 10, 10, 10),
                             timeToday.minusMonths(1),
                             null,
                             null,
@@ -284,7 +282,7 @@
                     .when(userRepository.findById(1L)).thenReturn(Optional.of(user));
             List<BookingDto> bookingListTest = bookingService.findBookingsAllById(Optional.of(1L));
             Assertions.assertEquals(1L, bookingListTest.get(0).getId());
-            Assertions.assertEquals("2022-10-20T10:10:10", bookingListTest.get(0).getStart().toString());
+            Assertions.assertEquals("2022-10-30T10:10:10", bookingListTest.get(0).getStart().toString());
             Assertions.assertEquals("2022-11-11T11:11:11", bookingListTest.get(0).getEnd().toString());
         }
 
@@ -296,7 +294,7 @@
                     .when(userRepository.findById(2L)).thenReturn(Optional.of(userNew));
             BookingDto bookingTest = bookingService.findBookingById(Optional.of(2L), Optional.of(1L));
             Assertions.assertEquals(1L, bookingTest.getId());
-            Assertions.assertEquals("2022-10-20T10:10:10", bookingTest.getStart().toString());
+            Assertions.assertEquals("2022-10-30T10:10:10", bookingTest.getStart().toString());
             Assertions.assertEquals("2022-11-11T11:11:11", bookingTest.getEnd().toString());
         }
 

@@ -30,19 +30,7 @@
 
         @BeforeEach
         void setUp() {
-//            bookingDtoOut = new BookingDtoOut(
-//                    6L,
-//                    start,
-//                    end,
-//                    APPROVED,
-//                    new UserDto(),
-//                    new ItemDto());
-//
-//            bookingDtoById = new BookingDtoById(
-//                    7L,
-//                    8L,
-//                    start,
-//                    end);
+
             bookingDto = new BookingDto(
                     9L,
                     1L,

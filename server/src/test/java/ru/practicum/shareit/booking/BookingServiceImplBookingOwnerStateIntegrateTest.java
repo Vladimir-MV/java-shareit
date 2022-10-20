@@ -63,7 +63,7 @@
                 null,
                 1L,
                 null,
-                LocalDateTime.of(2022, 10, 20, 10, 10, 10),
+                LocalDateTime.of(2022, 10, 30, 10, 10, 10),
                 LocalDateTime.of(2022, 11, 11, 11, 11, 11),
                 null,
                 null,
@@ -78,7 +78,7 @@
             List<BookingDto> bookingDtoOutListTest = bookingService.findBookingsOwnerState (Optional.of(2L),
                     Optional.of(0), Optional.of(2), "ALL");
             Assertions.assertEquals(1L, bookingDtoOutListTest.get(0).getId());
-            Assertions.assertEquals("2022-10-20T10:10:10", bookingDtoOutListTest.get(0).getStart().toString());
+            Assertions.assertEquals("2022-10-30T10:10:10", bookingDtoOutListTest.get(0).getStart().toString());
             Assertions.assertEquals("2022-11-11T11:11:11", bookingDtoOutListTest.get(0).getEnd().toString());
         }
     }

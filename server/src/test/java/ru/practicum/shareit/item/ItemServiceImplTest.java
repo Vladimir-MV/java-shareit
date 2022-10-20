@@ -131,15 +131,11 @@
             bookingDto = new BookingDto(
                     1L,
                     1L,
-                    LocalDateTime.of(2022, 10, 20, 10, 10, 10),
+                    LocalDateTime.of(2022, 10, 30, 10, 10, 10),
                     LocalDateTime.of(2022, 11, 11, 11, 11, 11),
                     Status.REJECTED,
                     userDto,
                     itemDto);
-//            bookingDto = new BookingDto(
-//                    1L,
-//                    LocalDateTime.of(2022, 10, 10, 20, 10, 10),
-//                    LocalDateTime.of(2022, 11, 11, 11, 11, 11));
 
             itemRequest = new ItemRequest(
                     1L,
@@ -377,7 +373,7 @@
             Mockito
                     .when(bookingRepository.findByItem_IdAndBooker_id(1L, 1L)).thenReturn(Optional.of(Arrays.asList(new Booking(
                             1L,
-                            LocalDateTime.of(2022, 10, 20, 10, 10, 10),
+                            LocalDateTime.of(2022, 10, 30, 10, 10, 10),
                             LocalDateTime.of(2022, 11, 11, 11, 11, 11),
                             item,
                             userNew,
