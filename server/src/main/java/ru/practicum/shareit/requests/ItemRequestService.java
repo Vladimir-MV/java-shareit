@@ -1,18 +1,17 @@
-package ru.practicum.shareit.requests;
+    package ru.practicum.shareit.requests;
 
-import ru.practicum.shareit.exception.ValidationException;
-import ru.practicum.shareit.requests.dto.ItemRequestDto;
-import java.util.List;
-import java.util.Optional;
+    import ru.practicum.shareit.exception.ValidationException;
+    import ru.practicum.shareit.requests.dto.ItemRequestDto;
+    import java.util.List;
+    import java.util.Optional;
 
-public interface ItemRequestService {
-    List<ItemRequestDto> findAllItemRequest(Optional<Long> idUser) throws ValidationException;
+    public interface ItemRequestService {
+        List<ItemRequestDto> findAllItemRequest(Optional<Long> idUser) throws ValidationException;
 
-    ItemRequestDto createItemRequest(Optional<Long> idUser, ItemRequestDto itemRequestDto) throws ValidationException;
+        ItemRequestDto createItemRequest(Optional<Long> idUser, ItemRequestDto itemRequestDto) throws ValidationException;
 
+        List<ItemRequestDto> findItemRequestPageable(Optional<Long> idUser, Optional<Integer> from, Optional<Integer> size)
+                throws ValidationException;
 
-    List<ItemRequestDto> findItemRequestPageable(Optional<Long> idUser, Optional<Integer> from, Optional<Integer> size)
-            throws ValidationException;
-
-    ItemRequestDto findItemRequestById(Optional<Long> idUser, Optional<Long> id) throws ValidationException;
-}
+        ItemRequestDto findItemRequestById(Optional<Long> idUser, Optional<Long> id) throws ValidationException;
+    }

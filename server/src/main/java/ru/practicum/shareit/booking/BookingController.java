@@ -64,5 +64,4 @@
             throws ValidationException, MessageFailedException {
             return bookingService.findBookingsOwnerState(idUser, from, size, state);
         }
-
     }

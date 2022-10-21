@@ -21,7 +21,6 @@
     import java.time.LocalDateTime;
     import java.util.*;
 
-
     @ExtendWith(MockitoExtension.class)
     class BookingServiceImplTest {
         private BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);

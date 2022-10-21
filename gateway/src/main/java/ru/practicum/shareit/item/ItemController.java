@@ -74,4 +74,6 @@
             log.info("createCommentGateway, userId={}, itemId={}, commentDto {}", userId, itemId, commentDto);
             return itemClient.createComment(userId, itemId, commentDto);
         }
+
+
     }

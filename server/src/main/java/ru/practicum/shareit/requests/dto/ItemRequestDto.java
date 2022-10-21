@@ -26,5 +26,4 @@
         private UserDto requestor;
         private LocalDateTime created;
         private List<ItemDto> items;
-
     }

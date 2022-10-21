@@ -8,7 +8,6 @@
 		<version>2.7.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-
 	<groupId>ru.practicum</groupId>
 	<artifactId>shareit</artifactId>
 	<packaging>pom</packaging>

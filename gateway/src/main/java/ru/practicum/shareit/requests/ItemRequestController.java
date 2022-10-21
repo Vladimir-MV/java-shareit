@@ -48,4 +48,6 @@
             log.info("findItemRequestByIdGateway, userId={}, requestId={}", userId, requestId);
             return requestsClient.findItemRequestById(userId, requestId);
         }
+
+
     }

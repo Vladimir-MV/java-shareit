@@ -3,4 +3,6 @@
     public class MessageFailedException extends Exception{
         public MessageFailedException() {
         }
+
+
     }

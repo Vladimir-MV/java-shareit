@@ -22,7 +22,6 @@
             this.start = start;
             this.end = end;
         }
-
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
@@ -40,5 +39,4 @@
         private User booker;
         @Enumerated(EnumType.STRING)
         private Status status;
-
     }

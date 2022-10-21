@@ -45,4 +45,6 @@
         Page<Booking> findByBookingsOwnerListStateWaiting(Long idUser, Pageable pageable);
         @Query("select b from Booking b where b.item.owner.id = ?1 and b.status = 'REJECTED' order by b.start desc")
         Page<Booking> findByBookingsOwnerListStateRejected(Long idUser, Pageable pageable);
+
+
     }

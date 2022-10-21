@@ -70,4 +70,6 @@
             log.info("findBookingOwnerGateway, get booking Owner with state {}, userId={}, from={}, size={}", state, userId, from, size);
             return bookingClient.findBookingsOwnerStateGateway(userId, from, size, state);
         }
+
+
     }

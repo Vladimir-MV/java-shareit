@@ -48,5 +48,4 @@
             @PathVariable Optional<Long> requestId) throws ValidationException {
             return itemRequestService.findItemRequestById(idUser, requestId);
         }
-
     }

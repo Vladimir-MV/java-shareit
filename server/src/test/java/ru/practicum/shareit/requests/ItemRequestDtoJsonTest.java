@@ -40,4 +40,5 @@
             assertThat(result).extractingJsonPathStringValue("$.created").isEqualTo("2022-02-03T04:05:06");
             assertThat(result).doesNotHaveEmptyJsonPathValue("$.items");
         }
+
     }

@@ -14,8 +14,6 @@
     @AllArgsConstructor
     public class BookingDto {
 
-
-
         public BookingDto(Long id, Long bookerId, LocalDateTime start, LocalDateTime end, Status status, UserDto booker, ItemDto item)
         {
             this.id = id;
@@ -27,6 +25,7 @@
             this.item = item;
         }
 
+
         private Long id;
         private Long itemId;
         private Long bookerId;
@@ -35,6 +34,5 @@
         private Status status;
         private UserDto booker;
         private ItemDto item;
-
 
     }

@@ -37,7 +37,6 @@
         private List<ItemDto> list;
         private List<ItemRequestDto> requestDtoList;
 
-
         @BeforeEach
         void setUp() {
             mapper.findAndRegisterModules();

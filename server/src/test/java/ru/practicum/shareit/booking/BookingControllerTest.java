@@ -26,7 +26,6 @@
     import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
     import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
     import static ru.practicum.shareit.booking.Status.WAITING;
-
     @ExtendWith(MockitoExtension.class)
     @WebMvcTest(controllers = BookingController.class)
     class BookingControllerTest {

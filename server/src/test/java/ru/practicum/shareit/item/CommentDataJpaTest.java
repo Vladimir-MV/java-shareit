@@ -59,4 +59,5 @@
             assertThat(commentQuery.getItem().getName(), equalTo(comment.getItem().getName()));
             assertThat(commentQuery.getAuthor().getName(), equalTo(comment.getAuthor().getName()));
         }
+
     }
