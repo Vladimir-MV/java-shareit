@@ -104,7 +104,6 @@
             Assertions.assertEquals(1L, itemRequestDtoTest.getId());
             Assertions.assertEquals("description", itemRequestDtoTest.getDescription());
             Assertions.assertEquals("John", itemRequestDtoTest.getRequestor().getName());
-
         }
 
         @Test

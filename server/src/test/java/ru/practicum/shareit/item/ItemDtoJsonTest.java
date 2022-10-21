@@ -48,7 +48,6 @@
         @Test
         void testItemDto() throws Exception {
             JsonContent<ItemDto> result = jsonDto.write(itemDto );
-            //JsonNode jsonNode= mapper.readValue(mapper.writeValueAsString(userDto), JsonNode.class);
             assertThat(result).extractingJsonPathNumberValue("$.id").isEqualTo(1);
             assertThat(result).extractingJsonPathStringValue("$.name").isEqualTo("John");
             assertThat(result).extractingJsonPathStringValue("$.description").isEqualTo("John good");

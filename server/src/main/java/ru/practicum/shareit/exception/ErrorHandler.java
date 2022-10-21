@@ -51,5 +51,4 @@
                     .status(HttpStatus.BAD_REQUEST)
                     .body("{\"error\":\"Unknown state: UNSUPPORTED_STATUS\"}");
         }
-
     }

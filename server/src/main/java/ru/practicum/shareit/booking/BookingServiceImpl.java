@@ -19,7 +19,6 @@
     import java.util.NoSuchElementException;
     import java.util.Optional;
 
-
     @Slf4j
     @Service
     public class BookingServiceImpl implements BookingService{

@@ -94,4 +94,5 @@
             log.info("Пользователь {} получил список запросов.", user.getName());
             return itemRequestDtoList;
         }
+
     }

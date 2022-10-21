@@ -15,15 +15,9 @@
 
     @JsonTest
     public class BookingDtoJsonTest {
-//        @Autowired
-//        private JacksonTester<BookingDtoOut> jsonDto;
-//        @Autowired
-//        private JacksonTester<BookingDtoById> jsonDtoById;
         @Autowired
         private JacksonTester<BookingDto> jsonDtoIn;
 
-//        BookingDtoOut bookingDtoOut;
-//        BookingDtoById bookingDtoById;
         BookingDto bookingDto;
         LocalDateTime start = LocalDateTime.of(2022, 2, 3, 4, 5, 7);
         LocalDateTime end = LocalDateTime.of(2022, 2, 3, 4, 5, 9);
@@ -51,21 +45,4 @@
             assertThat(result).doesNotHaveEmptyJsonPathValue("$.booker");
             assertThat(result).doesNotHaveEmptyJsonPathValue("$.item");
         }
-
-//        @Test
-//        void testBookingDtoById() throws Exception {
-//            JsonContent<BookingDto> result2 = jsonDtoIn.write(bookingDto);
-//            assertThat(result2).extractingJsonPathNumberValue("$.id").isEqualTo(7);
-//            //assertThat(result2).extractingJsonPathNumberValue("$.bookerId").isEqualTo(8);
-//            assertThat(result2).extractingJsonPathStringValue("$.start").isEqualTo("2022-02-03T04:05:07");
-//            assertThat(result2).extractingJsonPathStringValue("$.end").isEqualTo("2022-02-03T04:05:09");
-//        }
-
-//        @Test
-//        void testBookingDtoIn() throws Exception {
-//            JsonContent<BookingDto> result3 = jsonDtoIn.write(bookingDto);
-//            assertThat(result3).extractingJsonPathNumberValue("$.itemId").isEqualTo(9);
-//            assertThat(result3).extractingJsonPathStringValue("$.start").isEqualTo("2022-02-03T04:05:07");
-//            assertThat(result3).extractingJsonPathStringValue("$.end").isEqualTo("2022-02-03T04:05:09");
-//        }
     }

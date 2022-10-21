@@ -5,6 +5,7 @@
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.http.ResponseEntity;
     import org.springframework.stereotype.Controller;
+    import org.springframework.validation.annotation.Validated;
     import org.springframework.web.bind.annotation.*;
     import ru.practicum.shareit.booking.dto.BookingDto;
     import ru.practicum.shareit.exception.MessageFailedException;
@@ -12,6 +13,7 @@
     import javax.validation.constraints.Positive;
     import javax.validation.constraints.PositiveOrZero;
 
+    @Validated
     @Controller
     @RequestMapping(path = "/bookings")
     @RequiredArgsConstructor
@@ -35,8 +37,8 @@
         }
 
         @PostMapping
-        public ResponseEntity<Object> createBookingGateway (@Valid @RequestHeader("X-Sharer-User-Id") long userId,
-             @RequestBody BookingDto bookingDto) {
+        public ResponseEntity<Object> createBookingGateway (@RequestHeader("X-Sharer-User-Id") long userId,
+            @Valid @RequestBody BookingDto bookingDto) {
             log.info("create booking {}, userId={}", bookingDto, userId);
             return bookingClient.createBookingGateway(userId, bookingDto);
         }
@@ -68,4 +70,6 @@
             log.info("findBookingOwnerGateway, get booking Owner with state {}, userId={}, from={}, size={}", state, userId, from, size);
             return bookingClient.findBookingsOwnerStateGateway(userId, from, size, state);
         }
+
+
     }

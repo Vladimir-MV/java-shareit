@@ -21,4 +21,6 @@
                 throws ValidationException, MessageFailedException;
 
         List<BookingDto> findBookingsAllById(Optional<Long> userId) throws ValidationException;
+
+
     }

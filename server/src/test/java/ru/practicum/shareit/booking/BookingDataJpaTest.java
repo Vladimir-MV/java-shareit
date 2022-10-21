@@ -58,6 +58,7 @@
                 userNew,
                 Status.REJECTED);
 
+
         @Test
         void createBookingDataJpaTest() {
             userRepository.save(user);

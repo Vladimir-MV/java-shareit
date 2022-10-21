@@ -25,4 +25,5 @@
             assertThat(result).extractingJsonPathStringValue("$.name").isEqualTo("John");
             assertThat(result).extractingJsonPathStringValue("$.email").isEqualTo("john.doe@mail.com");
         }
+
     }

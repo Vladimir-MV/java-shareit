@@ -5,5 +5,4 @@
         public ConflictException(final String message) {
             super(message);
         }
-
     }

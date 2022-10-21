@@ -17,7 +17,6 @@
     @Transactional
     @ExtendWith(MockitoExtension.class)
     @SpringBootTest(
-           // properties = "db.name=test",
             webEnvironment = SpringBootTest.WebEnvironment.NONE)
     @RequiredArgsConstructor(onConstructor_ = @Autowired)
     @DirtiesContext

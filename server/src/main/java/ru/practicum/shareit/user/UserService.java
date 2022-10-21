@@ -14,5 +14,4 @@
         UserDto createUser( UserDto user) throws ValidationException, ConflictException;
         UserDto patchUser(UserDto user, Optional<Long> id) throws ValidationException, ConflictException;
         boolean validationUser(User user) throws ValidationException, ConflictException;
-
     }

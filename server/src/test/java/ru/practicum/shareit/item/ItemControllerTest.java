@@ -29,8 +29,6 @@
     @ExtendWith(MockitoExtension.class)
     @WebMvcTest(controllers = ItemController.class)
     class ItemControllerTest {
-//        @InjectMocks
-//        private  itemController;
         @Autowired
         private ObjectMapper mapper;
         @Autowired

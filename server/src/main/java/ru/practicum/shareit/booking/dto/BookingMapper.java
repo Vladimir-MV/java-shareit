@@ -18,8 +18,6 @@
                     ItemMapper.toItemDto(booking.getItem())
             );
         }
-
-
         public static Booking toBookingDtoIn(BookingDto bookingDto) {
             return new Booking (
                     bookingDto.getStart(),
